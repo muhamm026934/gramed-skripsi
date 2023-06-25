@@ -52,14 +52,86 @@ class _BookState extends State<Book> {
     });
   }
 
+  String headerText = "";
+  String titleText = "";
+  bool tampilAlertMessage = false;
+  _commandAlertMessage(headers, titles, tampilAlertMessages){
+    setState(() {
+      headerText = headers;
+      titleText = titles;
+      tampilAlertMessage = tampilAlertMessages;
+    });
+  }
+
+
+  _alertMessage(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: Colors.green,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(headerText, style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(titleText, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Card(
+                      color: Colors.blue,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('OK',style: TextStyle(color: Colors.white),),
+                        onPressed: (){},
+                      ),
+                    ),   
+                    Card(
+                      color: Colors.orangeAccent,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('Batal',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          _commandAlertMessage("", "", false);
+                        },
+                      ),
+                    ),                              
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   _formUpdateAdd(){
     return Center(
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(2.0),
           child: SizedBox(
             width: MediaQuery.of(context).size.width* 0.8,
-            height: MediaQuery.of(context).size.height* 0.8,
+            height: MediaQuery.of(context).size.height* 0.9,
             child: ListView(
               children:  [
                 Padding(
@@ -76,11 +148,12 @@ class _BookState extends State<Book> {
                     ],
                   ),
                 ),
-                const Card(
+                Card(
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: cBookJudul,
+                      decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue)
                         ),
@@ -89,11 +162,12 @@ class _BookState extends State<Book> {
                     ),
                   ),
                 ),
-                const Card(
+                Card(
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: cBookPenerbit,
+                      decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue)
                         ),
@@ -102,11 +176,12 @@ class _BookState extends State<Book> {
                     ),
                   ),
                 ),  
-                const Card(
+                Card(
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: cBookPengarang,
+                      decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue)
                         ),
@@ -115,11 +190,12 @@ class _BookState extends State<Book> {
                     ),
                   ),
                 ),  
-                const Card(
+                Card(
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: cBookTahun,
+                      decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue)
                         ),
@@ -128,12 +204,13 @@ class _BookState extends State<Book> {
                     ),
                   ),
                 ), 
-                const Card(
+                Card(
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: TextField(
+                      controller: cBookDeskripsi,
                       maxLines: 2,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue)
                         ),
@@ -141,22 +218,42 @@ class _BookState extends State<Book> {
                       ), 
                     ),
                   ),
-                ),  
+                ),                 
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top:8.0),
-                    child: Card(
-                      color: Colors.green,
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        surfaceTintColor: Colors.blue,
-                        padding: const EdgeInsets.all(10.0),
-                        textStyle: const TextStyle(fontSize: 12),
-                        ), child: const Text('Simpan Data Buku',style: TextStyle(color: Colors.white),),
-                        onPressed: (){},
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Card(
+                          color: Colors.green,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            surfaceTintColor: Colors.blue,
+                            padding: const EdgeInsets.all(10.0),
+                            textStyle: const TextStyle(fontSize: 12),
+                            ), child: const Text('Simpan Data',style: TextStyle(color: Colors.white),),
+                            onPressed: (){
+                              _commandAlertMessage("Simpan Data ${cBookJudul.text}","Pastikan Data Benar",true);
+                            },
+                          ),
+                        ),
+                        Card(
+                          color: Colors.blue,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            surfaceTintColor: Colors.blue,
+                            padding: const EdgeInsets.all(10.0),
+                            textStyle: const TextStyle(fontSize: 12),
+                            ), child: const Text('Foto Buku',style: TextStyle(color: Colors.white),),
+                            onPressed: (){},
+                          ), 
+                        ),                      
+                      ],
                     ),
                   ),
                 ),                                                                                    
@@ -176,7 +273,6 @@ class _BookState extends State<Book> {
         title: const Padding(
           padding: EdgeInsets.all(8.0),
           child: TextField(
-            obscureText: false,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white)
@@ -216,6 +312,9 @@ class _BookState extends State<Book> {
             tampilFormUpdateAdd == true
             ? _formUpdateAdd()
             :Container(),
+            tampilAlertMessage == true
+            ? _alertMessage()
+            : Container(),
           ],
         ),
       ),
