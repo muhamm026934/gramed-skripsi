@@ -1,5 +1,6 @@
 class ApiUrl {
-  static String server = "http://192.168.137.1:8080/siska";
-  static String user = "user";
-  static String dataUser = "$server/$user/data_user.php";
+  static String server = "http://192.168.1.6:8080/gramed";
+  static String buku = "buku";
+  static String addDataBuku = "$server/$buku/add_buku.php";
+  
 }

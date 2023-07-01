@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:gramed/api/postlist.dart';
+import 'package:gramed/service.dart';
 import 'package:gramed/web_custom_scroll_behavior.dart';
 
 class Book extends StatefulWidget {
@@ -12,20 +14,69 @@ class Book extends StatefulWidget {
 }
 
 class _BookState extends State<Book> {
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getPref();
+    _loading;
+  }
+
+  bool _loading = false ;
+  late String value = "";
+  late String idUsersApp = "";
+  late String nmUser = "";
+  late String username = "";
+  late String password = "";
+  late String tokenUsers = "";
+  late String userFoto = "";
+  late String telp = "";
+  late String email = "";
+  late String level = "";
+
+  Future<void> _getPref() async {
+    Service.getPref().then((preferences) {
+      setState(() {
+        value = preferences.getString('value');
+        idUsersApp = preferences.getString('idUsersApp');
+        nmUser = preferences.getString('nmUser');
+        username = preferences.getString('username');
+        password = preferences.getString('password');
+        tokenUsers = preferences.getString('tokenUsers');
+        userFoto = preferences.getString('userFoto');
+        telp = preferences.getString('telp');
+        email = preferences.getString('email');
+        level = preferences.getString('level');
+      });
+    });
+  }
 
   late File filePickerVal;
   String txtFilePicker = "";
   selectFile()async{
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'jpeg'],
+      );
+    
     if (result != null) {
         setState(() {
           txtFilePicker = result.files.single.name;
           filePickerVal = File(result.files.single.path.toString());
+          print(filePickerVal);
         });
     } else {
       // User canceled the picker
     }    
   }
+
+  clearFile(){
+    setState(() {
+      txtFilePicker = "";
+    });
+  }
+
   TextStyle _customFont() {
   return const TextStyle(color: Colors.white);
   }
@@ -63,7 +114,23 @@ class _BookState extends State<Book> {
     });
   }
 
-
+ String message = "", values = "";
+ List<PostList?> _messageUpload = [];
+ _functionUploadDataBuku() async{
+  setState(() {
+    _loading = true;
+  });
+  Service.functionUploadDataBuku("", filePickerVal, txtFilePicker, "").then((value) async {
+    setState(() {
+      _messageUpload = value;
+      _loading = false;
+      message = _messageUpload[0]!.message;
+      values = _messageUpload[0]!.value;   
+      print(message);
+      print(values);      
+    });
+  });
+ }
   _alertMessage(){
     return Center(
       child: SizedBox(
@@ -250,13 +317,27 @@ class _BookState extends State<Book> {
                             padding: const EdgeInsets.all(10.0),
                             textStyle: const TextStyle(fontSize: 12),
                             ), child: const Text('Foto Buku',style: TextStyle(color: Colors.white),),
-                            onPressed: (){},
+                            onPressed: 
+                            (){
+                              selectFile();
+                            },
                           ), 
                         ),                      
                       ],
                     ),
                   ),
-                ),                                                                                    
+                ),
+                txtFilePicker == ""     
+                ? Container()  
+                : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Image.file(filePickerVal,
+                    width: 100,
+                    height: 100,
+                    ),
+                  ),
+                )                                                                             
               ],
             ),
           ),
