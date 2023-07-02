@@ -24,24 +24,44 @@ class Service {
     return prefs;
   }
 
-  static Future <List<PostList>> functionUploadDataBuku(action , cBookJudul, cBookPenerbit, 
+  static Future <List<PostList>> functionUploadDataBuku(action , idBuku,cBookJudul, cBookPenerbit, 
   cBookPengarang ,cBookTahun ,cBookDeskripsi,filePaths, fileName, idUser) async{
     String tglInput = DateTime.now().toString();
-    var map = FormData.fromMap({
+    var map = 
+    fileName !=""
+    ? FormData.fromMap({
         'ACTION': action,
-        'id_buku': "",
+        'id_buku': idBuku.toString(),
         'judul': cBookJudul.toString(),
         'penerbit': cBookPenerbit.toString(),
         'pengarang': cBookPengarang.toString(),
         'tahun': cBookTahun.toString(),
         'description': cBookDeskripsi.toString(),
         'id_user_input_buku': idUser.toString(),
-        'date_user_input': tglInput,
-        'date_user_input_buku': tglInput,        
+        'date_user_input_buku': tglInput,      
         'files': MultipartFile.fromFileSync(filePaths.path, filename: fileName),
-      });  
+      })
+      :FormData.fromMap({
+        'ACTION': action,
+        'id_buku': idBuku.toString(),
+        'judul': cBookJudul.toString(),
+        'penerbit': cBookPenerbit.toString(),
+        'pengarang': cBookPengarang.toString(),
+        'tahun': cBookTahun.toString(),
+        'description': cBookDeskripsi.toString(),
+        'id_user_input_buku': idUser.toString(),
+        'date_user_input_buku': tglInput,        
+      });
     var dio = Dio();
-    final response = await dio.post(ApiUrl.addDataBuku, data: map);
+    final response = 
+    action == ApiUrl.tambahBukuText
+    ? await dio.post(ApiUrl.addDataBuku, data: map)
+    : action == ApiUrl.deleteBukuText
+    ? await dio.post(ApiUrl.deleteDataBuku, data: map)
+    : action == ApiUrl.editBukuText
+    ? await dio.post(ApiUrl.editDataBuku, data: map)
+    : await dio.post(ApiUrl.buku, data: map);
+    print(action);   
     print(filePaths);    
     print(response.statusCode);
     List<PostList> list  = parseResponse(response.data);

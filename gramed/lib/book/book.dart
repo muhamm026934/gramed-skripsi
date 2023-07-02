@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:gramed/api/api.dart';
 import 'package:gramed/api/postlist.dart';
 import 'package:gramed/service.dart';
 import 'package:gramed/web_custom_scroll_behavior.dart';
@@ -52,7 +53,7 @@ class _BookState extends State<Book> {
     });
   }
 
-  late File filePickerVal;
+  File? filePickerVal;
   String txtFilePicker = "";
   selectFile()async{
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -84,12 +85,13 @@ class _BookState extends State<Book> {
   Color _colorIcon() {
     return Colors.white;
   }
-
+    TextEditingController cBookId = TextEditingController();
     TextEditingController cBookJudul = TextEditingController();
     TextEditingController cBookPenerbit = TextEditingController();
     TextEditingController cBookPengarang= TextEditingController();
     TextEditingController cBookTahun = TextEditingController();
     TextEditingController cBookDeskripsi = TextEditingController();
+    TextEditingController cBookImage = TextEditingController();
     TextEditingController cBookGRQty = TextEditingController();
     TextEditingController cBookGRTgl = TextEditingController();
 
@@ -116,14 +118,14 @@ class _BookState extends State<Book> {
     _loading = true;
   });
   Service.functionUploadDataBuku(
-    "", cBookJudul.text, cBookPenerbit.text, cBookPengarang.text 
+    headerText, cBookId.text ,cBookJudul.text, cBookPenerbit.text, cBookPengarang.text 
     ,cBookTahun.text ,cBookDeskripsi.text,
     filePickerVal, txtFilePicker, idUsersApp, ).then((value) async {
     setState(() {
       _messageUpload = value;
       _loading = false;
-      message = _messageUpload[0]!.message;
-      values = _messageUpload[0]!.value;   
+      message = _messageUpload[0]!.message.toString();
+      values = _messageUpload[0]!.value.toString();   
       print(message);
       print(values);    
       
@@ -131,6 +133,12 @@ class _BookState extends State<Book> {
         setState(() {
           _commandAlertMessage("", "", false);
           _commandAlertMessageResponse(values, message, true);
+          _commandFormUpdateAdd("", false);
+          _getDataBuku("","","","","");
+          txtFilePicker = "";
+          _messageUpload.clear();
+          message ="";
+          values ="";
           _clearCtext();
         });
       }else{
@@ -145,6 +153,7 @@ class _BookState extends State<Book> {
 
  _clearCtext(){
   setState(() {
+    cBookId.text = "";
     cBookJudul.text = "";
     cBookPenerbit.text = "";
     cBookPengarang.text = "";
@@ -152,6 +161,7 @@ class _BookState extends State<Book> {
     cBookDeskripsi.text = "";
     cBookGRQty.text = "";
     cBookGRTgl.text = "";
+    cBookImage.text = "";
   });
  }
   _alertMessage(){
@@ -160,7 +170,14 @@ class _BookState extends State<Book> {
         width: MediaQuery.of(context).size.width* 0.8,
         height: MediaQuery.of(context).size.height* 0.3,        
         child: Card(
-          color: Colors.green,
+          color: 
+            textFormUpdateAdd == ApiUrl.tambahBukuText || headerText == ApiUrl.tambahBukuText 
+            ? Colors.green
+            :textFormUpdateAdd == ApiUrl.editBukuText || headerText == ApiUrl.editBukuText 
+            ? Colors.orange
+            :textFormUpdateAdd == ApiUrl.deleteBukuText || headerText == ApiUrl.deleteBukuText
+            ? Colors.red
+            : Colors.blue,
           child: ListView(
             children: [
               Padding(
@@ -276,6 +293,7 @@ class _BookState extends State<Book> {
     setState(() {
       textFormUpdateAdd = textFormUpdateAdds;
       tampilFormUpdateAdd = tampilFormUpdateAdds;
+      headerText = textFormUpdateAdds;
     });
   }
 
@@ -285,19 +303,22 @@ class _BookState extends State<Book> {
   _commandAlertMessage(headers, titles, tampilAlertMessages){
     setState(() {
       headerText = headers;
+      headerText = headers;
       titleText = titles;
       tampilAlertMessage = tampilAlertMessages;
     });
   }
 
-  _editDataBuku(cBookJuduls,cBookPenerbits,cBookPengarangs,cBookTahuns,cBookDeskripsis){
+  _editDataBuku(cBookIds,cBookJuduls,cBookPenerbits,cBookPengarangs,cBookTahuns,cBookDeskripsis,imageBook,headers){
     setState(() {
-        cBookJudul = cBookJuduls;
-        cBookPenerbit = cBookPenerbits;
-        cBookPengarang= cBookPengarangs;
-        cBookTahun = cBookTahuns;
-        cBookDeskripsi = cBookDeskripsis;
-        _commandFormUpdateAdd("Form Edit Buku", true);
+        cBookId.text = cBookIds;
+        cBookJudul.text = cBookJuduls;
+        cBookPenerbit.text = cBookPenerbits;
+        cBookPengarang.text = cBookPengarangs;
+        cBookTahun.text = cBookTahuns;
+        cBookDeskripsi.text = cBookDeskripsis;
+        cBookImage.text = imageBook;
+        _commandFormUpdateAdd(headers, true);
     });
   }
 
@@ -316,7 +337,7 @@ class _BookState extends State<Book> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Form $textFormUpdateAdd"),
+                      Text(textFormUpdateAdd),
                       IconButton(
                         color: Colors.red,
                         onPressed: (){
@@ -329,6 +350,7 @@ class _BookState extends State<Book> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: TextField(
+                      enabled: headerText == ApiUrl.detailBukuText ?false : true,
                       controller: cBookJudul,
                       decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
@@ -343,6 +365,7 @@ class _BookState extends State<Book> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: TextField(
+                      enabled: headerText == ApiUrl.detailBukuText ?false : true,
                       controller: cBookPenerbit,
                       decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
@@ -357,6 +380,7 @@ class _BookState extends State<Book> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: TextField(
+                      enabled: headerText == ApiUrl.detailBukuText ?false : true,
                       controller: cBookPengarang,
                       decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
@@ -371,6 +395,7 @@ class _BookState extends State<Book> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: TextField(
+                      enabled: headerText == ApiUrl.detailBukuText ?false : true,
                       keyboardType: TextInputType.number,
                       controller: cBookTahun,
                       decoration: const InputDecoration(
@@ -386,6 +411,7 @@ class _BookState extends State<Book> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: TextField(
+                      enabled: headerText == ApiUrl.detailBukuText ?false : true,
                       controller: cBookDeskripsi,
                       maxLines: 2,
                       decoration: const InputDecoration(
@@ -396,14 +422,16 @@ class _BookState extends State<Book> {
                       ), 
                     ),
                   ),
-                ),                 
-                Center(
+                ),     
+                headerText == ApiUrl.detailBukuText 
+                ? Container()            
+                : Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top:8.0),
                     child: Row(
                       mainAxisAlignment: txtFilePicker != "" ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
                       children: [
-                        txtFilePicker == ""
+                        txtFilePicker == "" && textFormUpdateAdd == ApiUrl.tambahBukuText
                         ? Container()
                         : Card(
                           color: Colors.green,
@@ -416,7 +444,13 @@ class _BookState extends State<Book> {
                             textStyle: const TextStyle(fontSize: 12),
                             ), child: const Text('Simpan Data',style: TextStyle(color: Colors.white),),
                             onPressed: (){
-                              _commandAlertMessage("Simpan Data ${cBookJudul.text}","Pastikan Data Benar",true);
+                              textFormUpdateAdd == ApiUrl.tambahBukuText
+                              ?_commandAlertMessage(ApiUrl.tambahBukuText,"Pastikan Data Benar",true)
+                              :textFormUpdateAdd == ApiUrl.editBukuText
+                              ?_commandAlertMessage(ApiUrl.editBukuText,"Apakah Data Buku Akan Diubah ?",true)
+                              :textFormUpdateAdd == ApiUrl.deleteBukuText
+                              ?_commandAlertMessage(ApiUrl.deleteBukuText,"Apakah Data Akan Dihapus ?",true)
+                              :_commandFormUpdateAdd("", false);
                             },
                           ),
                         ),
@@ -440,12 +474,23 @@ class _BookState extends State<Book> {
                     ),
                   ),
                 ),
-                txtFilePicker == ""     
-                ? Container()  
+                cBookImage.text == ""
+                ? Container()
                 : Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    child: Image.file(filePickerVal,
+                    child: Image.network(ApiUrl.viewImageBuku+cBookImage.text,
+                    width: 100,
+                    height: 100,
+                    ),
+                  ),
+                ),
+                txtFilePicker == ""     
+                ? Container()
+                : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Image.file(filePickerVal!,
                     width: 100,
                     height: 100,
                     ),
@@ -458,6 +503,13 @@ class _BookState extends State<Book> {
       ),
     );
   }
+  bool onLongPress = false;
+ _onLOngPress(){
+  setState(() {
+    onLongPress = !onLongPress;
+  });
+ }
+
 
   @override
   Widget build(BuildContext context) {
@@ -491,20 +543,63 @@ class _BookState extends State<Book> {
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context,index){
                       final listDataBuku = _listBuku[index]; 
-                      return Card(
-                        color: Colors.blue,
-                        child: ListTile(
-                          title: Text("Judul : ${listDataBuku!.judul}",style: _customFont()),
-                          subtitle: Text("Penerbit : ${listDataBuku.penerbit}",style: _customFont(),),
-                          leading: IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: _colorIcon())),
-                          trailing: IconButton(onPressed: (){
-                            _editDataBuku(
-                              listDataBuku.judul,
-                              listDataBuku.penerbit,
-                              listDataBuku.pengarang,
-                              listDataBuku.tahun,
-                              listDataBuku.description);
-                          }, icon: Icon(Icons.edit,color: _colorIcon())),
+                      return GestureDetector(
+                        onLongPress: (){
+                          _onLOngPress();
+                        },
+                        child: Card(
+                          color: Colors.blue,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: Text("Judul : ${listDataBuku!.judul} ID : ${listDataBuku.idBuku}",style: _customFont()),
+                                subtitle: Text("Penerbit : ${listDataBuku.penerbit}",style: _customFont(),),
+                                leading: Image.network(ApiUrl.viewImageBuku+listDataBuku.imageBook),
+                                trailing: IconButton(onPressed: (){
+                                        _editDataBuku(
+                                        listDataBuku.idBuku, 
+                                        listDataBuku.judul,
+                                        listDataBuku.penerbit,
+                                        listDataBuku.pengarang,
+                                        listDataBuku.tahun,
+                                        listDataBuku.description,
+                                        listDataBuku.imageBook,
+                                        ApiUrl.detailBukuText
+                                        );                                    
+                                }, icon: Icon(Icons.remove_red_eye,color: _colorIcon())),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Deskripsi : ${listDataBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ), 
+                              onLongPress == true                        
+                              ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Card(child: IconButton(onPressed: (){
+                                      _commandAlertMessage(ApiUrl.deleteBukuText, listDataBuku.judul, true);
+                                    }, icon: const Icon(Icons.delete_forever,color: Colors.red))),
+                                    Card(
+                                      child: IconButton(onPressed: (){
+                                      _editDataBuku(
+                                        listDataBuku.idBuku,
+                                        listDataBuku.judul,
+                                        listDataBuku.penerbit,
+                                        listDataBuku.pengarang,
+                                        listDataBuku.tahun,
+                                        listDataBuku.description,
+                                        listDataBuku.imageBook,
+                                        ApiUrl.editBukuText
+                                        );                                  
+                                      }, icon: const Icon(Icons.edit,color: Colors.orange)),
+                                    ),
+                                  ],
+                                ),
+                              ):Container()
+                            ],
+                          ),
                         ),
                       );
                     }
@@ -526,7 +621,8 @@ class _BookState extends State<Book> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          _commandFormUpdateAdd("Tambah Buku",true);
+          _clearCtext();
+          _commandFormUpdateAdd(ApiUrl.tambahBukuText,true);
         },
         backgroundColor: Colors.green,
         child: const Icon(Icons.add),
