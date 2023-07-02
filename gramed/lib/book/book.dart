@@ -126,15 +126,15 @@ class _BookState extends State<Book> {
       _loading = false;
       message = _messageUpload[0]!.message.toString();
       values = _messageUpload[0]!.value.toString();   
-      print(message);
+      print("message $message");
       print(values);    
       
-      if (message == "1") {
+      if (values == "1") {
         setState(() {
           _commandAlertMessage("", "", false);
           _commandAlertMessageResponse(values, message, true);
           _commandFormUpdateAdd("", false);
-          _getDataBuku("","","","","");
+          _getDataBuku("",cBookId.text,"","","");
           txtFilePicker = "";
           _messageUpload.clear();
           message ="";
@@ -302,7 +302,7 @@ class _BookState extends State<Book> {
   bool tampilAlertMessage = false;
   _commandAlertMessage(headers, titles, tampilAlertMessages){
     setState(() {
-      headerText = headers;
+      textFormUpdateAdd = headers;
       headerText = headers;
       titleText = titles;
       tampilAlertMessage = tampilAlertMessages;
@@ -552,7 +552,7 @@ class _BookState extends State<Book> {
                           child: Column(
                             children: [
                               ListTile(
-                                title: Text("Judul : ${listDataBuku!.judul} ID : ${listDataBuku.idBuku}",style: _customFont()),
+                                title: Text("Judul : ${listDataBuku!.judul}",style: _customFont()),
                                 subtitle: Text("Penerbit : ${listDataBuku.penerbit}",style: _customFont(),),
                                 leading: Image.network(ApiUrl.viewImageBuku+listDataBuku.imageBook),
                                 trailing: IconButton(onPressed: (){
@@ -579,6 +579,9 @@ class _BookState extends State<Book> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Card(child: IconButton(onPressed: (){
+                                      setState(() {
+                                        cBookId.text = listDataBuku.idBuku;
+                                      });
                                       _commandAlertMessage(ApiUrl.deleteBukuText, listDataBuku.judul, true);
                                     }, icon: const Icon(Icons.delete_forever,color: Colors.red))),
                                     Card(

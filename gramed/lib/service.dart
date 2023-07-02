@@ -64,6 +64,7 @@ class Service {
     print(action);   
     print(filePaths);    
     print(response.statusCode);
+    print("idBuku $idBuku"); 
     List<PostList> list  = parseResponse(response.data);
     return list;
   }   
