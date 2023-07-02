@@ -3,6 +3,7 @@ class PostList {
   late String idBuku ;
   late String judul;
   late String penerbit;
+  late String pengarang;
   late String tahun;
   late String description; 
   late String imageBook;
@@ -11,10 +12,21 @@ class PostList {
   late String message;
   late String value;  
   late String valueImage;  
+
+  late String idStock; 
+  late String idBook; 
+  late String qtyGr; 
+  late String dateGr; 
+  late String noNote; 
+  late String idUserInputStock; 
+  late String dateUserInputStock; 
+
+
   PostList({
     required this.idBuku,
     required this.judul,
     required this.penerbit,
+    required this.pengarang,
     required this.tahun,
     required this.description,
     required this.imageBook,
@@ -23,6 +35,15 @@ class PostList {
     required this.message,
     required this.value,    
     required this.valueImage, 
+
+    required this.idStock,
+    required this.idBook,
+    required this.qtyGr,
+    required this.dateGr,
+    required this.noNote,  
+    required this.idUserInputStock,    
+    required this.dateUserInputStock, 
+
   });
 
   factory PostList.fromJsons(Map<String,dynamic> json){
@@ -30,6 +51,7 @@ class PostList {
       idBuku:json['id_buku'] ?? "", 
       judul: json['judul'] ?? "", 
       penerbit: json['penerbit'] ?? "",
+      pengarang: json['pengarang'] ?? "",
       tahun: json['tahun'] ?? "",
       description: json['description'] ?? "",
       imageBook: json['image_book'] ?? "",
@@ -38,6 +60,14 @@ class PostList {
       message: json['message'] ?? "", 
       value: json['value'] ?? "",
       valueImage: json['value_image'] ?? "",
+
+      idStock: json['id_stock'] ?? "",
+      idBook: json['id_book'] ?? "", 
+      qtyGr: json['qty_gr'] ?? "",
+      dateGr: json['date_gr'] ?? "", 
+      noNote: json['no_note'] ?? "",
+      idUserInputStock: json['id_user_input_stock'] ?? "",      
+      dateUserInputStock: json['date_user_input_stock'] ?? "",     
       );
   }
   

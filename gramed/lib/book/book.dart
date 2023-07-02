@@ -17,9 +17,9 @@ class _BookState extends State<Book> {
   
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getPref();
+    _getDataBuku("","","","","");
     _loading;
   }
 
@@ -93,24 +93,19 @@ class _BookState extends State<Book> {
     TextEditingController cBookGRQty = TextEditingController();
     TextEditingController cBookGRTgl = TextEditingController();
 
-  bool tampilFormUpdateAdd = false;
-  String textFormUpdateAdd = "";
+  List<PostList?> _listBuku = [];
+  List<PostList?> _allListBuku = [];
 
-  _commandFormUpdateAdd(textFormUpdateAdds, tampilFormUpdateAdds){
+  _getDataBuku(action,idBuku,judulBuku,penerbit,tahun) async{
     setState(() {
-      textFormUpdateAdd = textFormUpdateAdds;
-      tampilFormUpdateAdd = tampilFormUpdateAdds;
+      _loading = true;
     });
-  }
-
-  String headerText = "";
-  String titleText = "";
-  bool tampilAlertMessage = false;
-  _commandAlertMessage(headers, titles, tampilAlertMessages){
-    setState(() {
-      headerText = headers;
-      titleText = titles;
-      tampilAlertMessage = tampilAlertMessages;
+    Service.getDataBuku(action,idBuku,judulBuku,penerbit,tahun,idUsersApp).then((value) async {
+      setState(() {
+        _listBuku = value;
+        _allListBuku = value;
+        _loading = false;
+      });
     });
   }
 
@@ -120,15 +115,43 @@ class _BookState extends State<Book> {
   setState(() {
     _loading = true;
   });
-  Service.functionUploadDataBuku("", filePickerVal, txtFilePicker, "").then((value) async {
+  Service.functionUploadDataBuku(
+    "", cBookJudul.text, cBookPenerbit.text, cBookPengarang.text 
+    ,cBookTahun.text ,cBookDeskripsi.text,
+    filePickerVal, txtFilePicker, idUsersApp, ).then((value) async {
     setState(() {
       _messageUpload = value;
       _loading = false;
       message = _messageUpload[0]!.message;
       values = _messageUpload[0]!.value;   
       print(message);
-      print(values);      
+      print(values);    
+      
+      if (message == "1") {
+        setState(() {
+          _commandAlertMessage("", "", false);
+          _commandAlertMessageResponse(values, message, true);
+          _clearCtext();
+        });
+      }else{
+        setState(() {
+        _commandAlertMessage("", "", false);
+        _commandAlertMessageResponse(values, message, true);          
+        });
+      }
     });
+  });
+ }
+
+ _clearCtext(){
+  setState(() {
+    cBookJudul.text = "";
+    cBookPenerbit.text = "";
+    cBookPengarang.text = "";
+    cBookTahun.text = "";
+    cBookDeskripsi.text = "";
+    cBookGRQty.text = "";
+    cBookGRTgl.text = "";
   });
  }
   _alertMessage(){
@@ -163,7 +186,9 @@ class _BookState extends State<Book> {
                         padding: const EdgeInsets.all(10.0),
                         textStyle: const TextStyle(fontSize: 12),
                         ), child: const Text('OK',style: TextStyle(color: Colors.white),),
-                        onPressed: (){},
+                        onPressed: (){
+                          _functionUploadDataBuku();
+                        },
                       ),
                     ),   
                     Card(
@@ -189,6 +214,91 @@ class _BookState extends State<Book> {
         ),
       ),
     );
+  }
+
+  String valueResponse = "";
+  String messageResponse = "";
+  bool tampilAlertMessageResponse = false;
+  _commandAlertMessageResponse(valueResponses, messageResponses, tampilAlertMessageResponses){
+    setState(() {
+      valueResponse = valueResponses;
+      messageResponse = messageResponses;
+      tampilAlertMessageResponse = tampilAlertMessageResponses;
+    });
+  }
+
+  _alertMessageResponse(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: valueResponse == "1" ? Colors.green: Colors.red,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(messageResponse, style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(titleText, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Card(
+                  color: Colors.orangeAccent,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    surfaceTintColor: Colors.blue,
+                    padding: const EdgeInsets.all(10.0),
+                    textStyle: const TextStyle(fontSize: 12),
+                    ), child: const Text('Keluar',style: TextStyle(color: Colors.white),),
+                    onPressed: (){
+                      _commandAlertMessageResponse("", "", false);
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  bool tampilFormUpdateAdd = false;
+  String textFormUpdateAdd = "";
+
+  _commandFormUpdateAdd(textFormUpdateAdds, tampilFormUpdateAdds){
+    setState(() {
+      textFormUpdateAdd = textFormUpdateAdds;
+      tampilFormUpdateAdd = tampilFormUpdateAdds;
+    });
+  }
+
+  String headerText = "";
+  String titleText = "";
+  bool tampilAlertMessage = false;
+  _commandAlertMessage(headers, titles, tampilAlertMessages){
+    setState(() {
+      headerText = headers;
+      titleText = titles;
+      tampilAlertMessage = tampilAlertMessages;
+    });
+  }
+
+  _editDataBuku(cBookJuduls,cBookPenerbits,cBookPengarangs,cBookTahuns,cBookDeskripsis){
+    setState(() {
+        cBookJudul = cBookJuduls;
+        cBookPenerbit = cBookPenerbits;
+        cBookPengarang= cBookPengarangs;
+        cBookTahun = cBookTahuns;
+        cBookDeskripsi = cBookDeskripsis;
+        _commandFormUpdateAdd("Form Edit Buku", true);
+    });
   }
 
   _formUpdateAdd(){
@@ -261,6 +371,7 @@ class _BookState extends State<Book> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: cBookTahun,
                       decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(
@@ -290,9 +401,11 @@ class _BookState extends State<Book> {
                   child: Padding(
                     padding: const EdgeInsets.only(top:8.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: txtFilePicker != "" ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
                       children: [
-                        Card(
+                        txtFilePicker == ""
+                        ? Container()
+                        : Card(
                           color: Colors.green,
                           child: TextButton(
                             style: TextButton.styleFrom(
@@ -374,18 +487,27 @@ class _BookState extends State<Book> {
                 child: ScrollConfiguration(
                   behavior: WebCustomScrollBehavior(),
                   child: ListView.builder(
-                    itemCount: 20,
+                    itemCount: _listBuku.length,
                     scrollDirection: Axis.vertical,
-                    itemBuilder: (context,index)=> 
-                    Card(
-                      color: Colors.blue,
-                      child: ListTile(
-                        title: Text("Buku $index",style: _customFont()),
-                        subtitle: Text("Deskripsi $index",style: _customFont(),),
-                        leading: IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: _colorIcon())),
-                        trailing: IconButton(onPressed: (){}, icon: Icon(Icons.edit,color: _colorIcon())),
-                      ),
-                    ),
+                    itemBuilder: (context,index){
+                      final listDataBuku = _listBuku[index]; 
+                      return Card(
+                        color: Colors.blue,
+                        child: ListTile(
+                          title: Text("Judul : ${listDataBuku!.judul}",style: _customFont()),
+                          subtitle: Text("Penerbit : ${listDataBuku.penerbit}",style: _customFont(),),
+                          leading: IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: _colorIcon())),
+                          trailing: IconButton(onPressed: (){
+                            _editDataBuku(
+                              listDataBuku.judul,
+                              listDataBuku.penerbit,
+                              listDataBuku.pengarang,
+                              listDataBuku.tahun,
+                              listDataBuku.description);
+                          }, icon: Icon(Icons.edit,color: _colorIcon())),
+                        ),
+                      );
+                    }
                   ),
                 ),
               ),
@@ -396,6 +518,9 @@ class _BookState extends State<Book> {
             tampilAlertMessage == true
             ? _alertMessage()
             : Container(),
+            tampilAlertMessageResponse == true
+            ? _alertMessageResponse()
+            : Container()
           ],
         ),
       ),

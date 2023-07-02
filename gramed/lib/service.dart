@@ -24,38 +24,45 @@ class Service {
     return prefs;
   }
 
-  static Future <List<PostList>> functionUploadDataBuku(action , filePaths, fileName, idUser) async{
+  static Future <List<PostList>> functionUploadDataBuku(action , cBookJudul, cBookPenerbit, 
+  cBookPengarang ,cBookTahun ,cBookDeskripsi,filePaths, fileName, idUser) async{
     String tglInput = DateTime.now().toString();
     var map = FormData.fromMap({
         'ACTION': action,
-        'id_user_input': idUser.toString(),
+        'id_buku': "",
+        'judul': cBookJudul.toString(),
+        'penerbit': cBookPenerbit.toString(),
+        'pengarang': cBookPengarang.toString(),
+        'tahun': cBookTahun.toString(),
+        'description': cBookDeskripsi.toString(),
+        'id_user_input_buku': idUser.toString(),
         'date_user_input': tglInput,
-        'date_update': tglInput,        
+        'date_user_input_buku': tglInput,        
         'files': MultipartFile.fromFileSync(filePaths.path, filename: fileName),
       });  
     var dio = Dio();
     final response = await dio.post(ApiUrl.addDataBuku, data: map);
     print(filePaths);    
     print(response.statusCode);
-    List<PostList> listOwss  = parseResponse(response.data);
-    return listOwss;
+    List<PostList> list  = parseResponse(response.data);
+    return list;
   }   
   
-  static Future functionDataSec(action , filePaths, fileName, idUser) async{
-    String tglInput = DateTime.now().toString();
+  static Future<List<PostList>> getDataBuku(action,idBuku,judulBuku,penerbit,tahun,idUser) async{
     var map = FormData.fromMap({
-        'ACTION': '$action',
-        'id_sec': '$filePaths',
-        'section': '$fileName',
-        'status_sec': '$idUser',
-        'input_sec_by': '$idUser',
-        'input_sec_date': tglInput,
+        'ACTION': action,
+        'id_buku': idBuku,
+        'judul': judulBuku,
+        'penerbit': penerbit,
+        'tahun': tahun,
+        'id_user_input_buku': idUser,
       });  
     var dio = Dio();
-    final response = await dio.post(ApiUrl.addDataBuku, data: map);
-    final listSec  = jsonDecode(response.data);
-    return listSec;
-  }  
+    final response = await dio.post(ApiUrl.viewDataBuku, data: map);
+
+    List<PostList> listTeam  = parseResponse(response.data);
+    return listTeam;
+  }
 
   static List<PostList> parseResponse(String responseBody) {
     final  parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
