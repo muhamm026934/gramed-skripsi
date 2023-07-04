@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gramed/book/book.dart';
 import 'package:gramed/home.dart';
 import 'package:gramed/splash_screen.dart';
+import 'package:gramed/user/user.dart';
 
 
 void main() => runApp(MaterialApp(
@@ -13,5 +14,5 @@ void main() => runApp(MaterialApp(
   ),
   debugShowCheckedModeBanner: false,
   title: "Gramedia",
-  home: const Book(session: '',)
+  home: const User()
 ));

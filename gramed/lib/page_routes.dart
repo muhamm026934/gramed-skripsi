@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gramed/home.dart';
 import 'package:gramed/login.dart';
+import 'package:gramed/user/user.dart';
 
 class PageRoutes {
 
@@ -22,5 +23,12 @@ class PageRoutes {
       }));
     });
   }   
-  
+  static routeToUser(context) async {
+    var duration = const Duration(milliseconds: 10);
+    return Timer(duration, (){
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_){
+        return const User();
+      }));
+    });
+  }   
 }

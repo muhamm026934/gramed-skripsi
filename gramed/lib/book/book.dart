@@ -117,6 +117,7 @@ class _BookState extends State<Book> {
   setState(() {
     _loading = true;
   });
+  
   Service.functionUploadDataBuku(
     headerText, cBookId.text ,cBookJudul.text, cBookPenerbit.text, cBookPengarang.text 
     ,cBookTahun.text ,cBookDeskripsi.text,
@@ -479,9 +480,14 @@ class _BookState extends State<Book> {
                 : Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    child: Image.network(ApiUrl.viewImageBuku+cBookImage.text,
-                    width: 100,
-                    height: 100,
+                    child: Column(
+                      children: [
+                        const Text("Foto Buku"),
+                        Image.network(ApiUrl.viewImageBuku+cBookImage.text,
+                        width: 100,
+                        height: 100,
+                        ),
+                      ],
                     ),
                   ),
                 ),

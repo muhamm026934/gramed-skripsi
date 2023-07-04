@@ -21,6 +21,15 @@ class PostList {
   late String idUserInputStock; 
   late String dateUserInputStock; 
 
+  late String idUser;
+  late String name;
+  late String username;
+  late String password;
+  late String address;  
+  late String level;    
+  late String email; 
+  late String noTelp;    
+  late String token; 
 
   PostList({
     required this.idBuku,
@@ -44,6 +53,16 @@ class PostList {
     required this.idUserInputStock,    
     required this.dateUserInputStock, 
 
+    required this.idUser,
+    required this.name,
+    required this.username,
+    required this.password,
+    required this.address,  
+    required this.level,    
+    required this.email, 
+    required this.noTelp,    
+    required this.token, 
+    
   });
 
   factory PostList.fromJsons(Map<String,dynamic> json){
@@ -68,6 +87,17 @@ class PostList {
       noNote: json['no_note'] ?? "",
       idUserInputStock: json['id_user_input_stock'] ?? "",      
       dateUserInputStock: json['date_user_input_stock'] ?? "",     
+
+      idUser: json['id_user'] ?? "",
+      name: json['name'] ?? "", 
+      username: json['username'] ?? "",
+      password: json['password'] ?? "", 
+      address: json['address'] ?? "",
+      level: json['level'] ?? "",      
+      email: json['email'] ?? "",     
+      noTelp: json['no_telp'] ?? "",  
+      token: json['token'] ?? "",   
+
       );
   }
   
