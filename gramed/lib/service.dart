@@ -12,6 +12,7 @@ class Service {
     String username,
     String password,
     String address,
+    String level,
     String email,
     String noTelp,
     String token) async {
@@ -40,7 +41,7 @@ class Service {
 
 
   static Future <List<PostList>> functionUploadDataBuku(action , idBuku,cBookJudul, cBookPenerbit, 
-  cBookPengarang ,cBookTahun ,cBookDeskripsi,filePaths, fileName, idUser) async{
+  cBookPengarang ,cPrices,cDiskons,cBookTahun ,cBookDeskripsi,filePaths, fileName, idUser) async{
     String tglInput = DateTime.now().toString();
     var map = 
     fileName !=""
@@ -50,6 +51,8 @@ class Service {
         'judul': cBookJudul.toString(),
         'penerbit': cBookPenerbit.toString(),
         'pengarang': cBookPengarang.toString(),
+        'price': cPrices.toString(),
+        'diskon': cDiskons.toString(),
         'tahun': cBookTahun.toString(),
         'description': cBookDeskripsi.toString(),
         'id_user_input_buku': idUser.toString(),
@@ -62,6 +65,8 @@ class Service {
         'judul': cBookJudul.toString(),
         'penerbit': cBookPenerbit.toString(),
         'pengarang': cBookPengarang.toString(),
+        'price': cPrices.toString(),
+        'diskon': cDiskons.toString(),
         'tahun': cBookTahun.toString(),
         'description': cBookDeskripsi.toString(),
         'id_user_input_buku': idUser.toString(),

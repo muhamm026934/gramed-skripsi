@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gramed/api/api.dart';
 import 'package:gramed/api/postlist.dart';
+import 'package:gramed/drawer.dart';
 import 'package:gramed/service.dart';
 import 'package:gramed/web_custom_scroll_behavior.dart';
 
@@ -25,30 +26,31 @@ class _BookState extends State<Book> {
   }
 
   bool _loading = false ;
+  
   late String value = "";
   late String idUsersApp = "";
-  late String nmUser = "";
+  late String name = "";
   late String username = "";
   late String password = "";
-  late String tokenUsers = "";
-  late String userFoto = "";
-  late String telp = "";
-  late String email = "";
+  late String address = "";
   late String level = "";
+  late String email = "";
+  late String noTelp = "";
+  late String token = "";
 
   Future<void> _getPref() async {
     Service.getPref().then((preferences) {
       setState(() {
         value = preferences.getString('value');
         idUsersApp = preferences.getString('idUsersApp');
-        nmUser = preferences.getString('nmUser');
+        name = preferences.getString('name');
         username = preferences.getString('username');
         password = preferences.getString('password');
-        tokenUsers = preferences.getString('tokenUsers');
-        userFoto = preferences.getString('userFoto');
-        telp = preferences.getString('telp');
-        email = preferences.getString('email');
+        address = preferences.getString('address');
         level = preferences.getString('level');
+        email = preferences.getString('email');
+        noTelp = preferences.getString('noTelp');
+        token = preferences.getString('token');
       });
     });
   }
@@ -65,7 +67,6 @@ class _BookState extends State<Book> {
         setState(() {
           txtFilePicker = result.files.single.name;
           filePickerVal = File(result.files.single.path.toString());
-          print(filePickerVal);
         });
     } else {
       // User canceled the picker
@@ -89,6 +90,8 @@ class _BookState extends State<Book> {
     TextEditingController cBookJudul = TextEditingController();
     TextEditingController cBookPenerbit = TextEditingController();
     TextEditingController cBookPengarang= TextEditingController();
+    TextEditingController cPrice = TextEditingController();
+    TextEditingController cDiskon = TextEditingController();
     TextEditingController cBookTahun = TextEditingController();
     TextEditingController cBookDeskripsi = TextEditingController();
     TextEditingController cBookImage = TextEditingController();
@@ -96,7 +99,6 @@ class _BookState extends State<Book> {
     TextEditingController cBookGRTgl = TextEditingController();
 
   List<PostList?> _listBuku = [];
-  List<PostList?> _allListBuku = [];
 
   _getDataBuku(action,idBuku,judulBuku,penerbit,tahun) async{
     setState(() {
@@ -105,7 +107,6 @@ class _BookState extends State<Book> {
     Service.getDataBuku(action,idBuku,judulBuku,penerbit,tahun,idUsersApp).then((value) async {
       setState(() {
         _listBuku = value;
-        _allListBuku = value;
         _loading = false;
       });
     });
@@ -120,7 +121,7 @@ class _BookState extends State<Book> {
   
   Service.functionUploadDataBuku(
     headerText, cBookId.text ,cBookJudul.text, cBookPenerbit.text, cBookPengarang.text 
-    ,cBookTahun.text ,cBookDeskripsi.text,
+    ,cPrice.text,cDiskon.text,cBookTahun.text, cBookDeskripsi.text,
     filePickerVal, txtFilePicker, idUsersApp, ).then((value) async {
     setState(() {
       _messageUpload = value;
@@ -158,6 +159,8 @@ class _BookState extends State<Book> {
     cBookJudul.text = "";
     cBookPenerbit.text = "";
     cBookPengarang.text = "";
+    cPrice.text = "";
+    cDiskon.text = "";
     cBookTahun.text = "";
     cBookDeskripsi.text = "";
     cBookGRQty.text = "";
@@ -310,12 +313,14 @@ class _BookState extends State<Book> {
     });
   }
 
-  _editDataBuku(cBookIds,cBookJuduls,cBookPenerbits,cBookPengarangs,cBookTahuns,cBookDeskripsis,imageBook,headers){
+  _editDataBuku(cBookIds,cBookJuduls,cBookPenerbits,cBookPengarangs,cPrices,cDiskons,cBookTahuns,cBookDeskripsis,imageBook,headers){
     setState(() {
         cBookId.text = cBookIds;
         cBookJudul.text = cBookJuduls;
         cBookPenerbit.text = cBookPenerbits;
         cBookPengarang.text = cBookPengarangs;
+        cPrice.text = cPrices;
+        cDiskon.text = cDiskons;
         cBookTahun.text = cBookTahuns;
         cBookDeskripsi.text = cBookDeskripsis;
         cBookImage.text = imageBook;
@@ -391,7 +396,39 @@ class _BookState extends State<Book> {
                       ), 
                     ),
                   ),
-                ),  
+                ), 
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      enabled: headerText == ApiUrl.detailBukuText ?false : true,
+                      controller: cPrice,
+                      decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)
+                        ),
+                        label: Text("Harga Buku",style: TextStyle(fontSize: 10,color: Colors.blue),),
+                      ), 
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      enabled: headerText == ApiUrl.detailBukuText ?false : true,
+                      controller: cDiskon,
+                      decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)
+                        ),
+                        label: Text("Potongan Harga % / Diskon",style: TextStyle(fontSize: 10,color: Colors.blue),),
+                      ), 
+                    ),
+                  ),
+                ),                  
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
@@ -516,11 +553,10 @@ class _BookState extends State<Book> {
   });
  }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(),
+      drawer: const Drawers(),
       appBar: AppBar(
         title: const Padding(
           padding: EdgeInsets.all(8.0),
@@ -567,6 +603,8 @@ class _BookState extends State<Book> {
                                         listDataBuku.judul,
                                         listDataBuku.penerbit,
                                         listDataBuku.pengarang,
+                                        listDataBuku.price,
+                                        listDataBuku.diskon,
                                         listDataBuku.tahun,
                                         listDataBuku.description,
                                         listDataBuku.imageBook,
@@ -575,8 +613,19 @@ class _BookState extends State<Book> {
                                 }, icon: Icon(Icons.remove_red_eye,color: _colorIcon())),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.only(bottom:8.0),
                                 child: Text("Deskripsi : ${listDataBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ), 
+                              Padding(
+                                padding: const EdgeInsets.only(bottom:8.0),
+                                child: Text("Harga : Rp. ${listDataBuku.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ), 
+                              Padding(
+                                padding: const EdgeInsets.only(bottom:8.0),
+                                child: 
+                                listDataBuku.price != listDataBuku.netPrice
+                                ? Text("Harga Setelah Diskon ${listDataBuku.diskon}% : Rp. ${listDataBuku.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
+                                : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
                               ), 
                               onLongPress == true                        
                               ? Padding(
@@ -597,6 +646,8 @@ class _BookState extends State<Book> {
                                         listDataBuku.judul,
                                         listDataBuku.penerbit,
                                         listDataBuku.pengarang,
+                                        listDataBuku.price,
+                                        listDataBuku.diskon,
                                         listDataBuku.tahun,
                                         listDataBuku.description,
                                         listDataBuku.imageBook,

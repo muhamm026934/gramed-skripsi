@@ -20,7 +20,7 @@ class ApiUrl {
   static String addDataUser = "$server/$user/add_user.php";
   static String editDataUser = "$server/$user/edit_user.php";
   static String deleteDataUser = "$server/$user/delete_user.php";
-  static String logins = "login";
+  static String logins = "logins";
   static String login = "$server/$logins/login.php";
   
 }

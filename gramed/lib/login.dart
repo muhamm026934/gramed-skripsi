@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gramed/page_routes.dart';
 import 'package:gramed/service.dart';
+import 'package:gramed/user/customAlertDialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -10,11 +12,41 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+  }
+
   TextEditingController controllerUsername = TextEditingController();
   TextEditingController controllerPasword = TextEditingController();
 
   late bool _loading;
   String message = "", values = "";
+  
+  showMyDialog(title,content,backgroundColor,onPressedOks,onPressedNotOKs,textButtonOK,textButtonNotOK,textColor,buttonColorOk,buttonColorNotOK) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => CustomAlertDialog(
+        title: title, 
+        content: content, 
+        backgroundColor: backgroundColor, 
+        onPressedOk: onPressedOks, 
+        onPressedNotOK: onPressedNotOKs, 
+        textButtonOK: textButtonOK, 
+        textButtonNotOK: textButtonNotOK,
+        textColor: textColor,
+        buttonColorOk:buttonColorOk,
+        buttonColorNotOK:buttonColorNotOK,
+      )
+    );
+  }
+
+  _pageRoutesAfterLogin(){
+    PageRoutes.routeToHome(context);
+  }
 
   _logins(username,password) async{
     setState(() {
@@ -48,10 +80,18 @@ class _LoginState extends State<Login> {
           prefs.setString('level', levels);
           prefs.setString('email', emails);
           prefs.setString('noTelp', noTelps);
-          prefs.setString('token', tokens);         
+          prefs.setString('token', tokens);  
           Service.writeSR(
-            values, idUsersApps, names, usernames, 
-            addresss, levels, emails, noTelps, tokens).then((prefs) {
+            values, 
+            idUsersApps, 
+            names, 
+            usernames, 
+            passwords,
+            addresss, 
+            levels, 
+            emails, 
+            noTelps, 
+            tokens).then((prefs) {
           prefs.setString('value', values);
           prefs.setString('idUsersApp', idUsersApps);
           prefs.setString('name', names);           
@@ -62,9 +102,22 @@ class _LoginState extends State<Login> {
           prefs.setString('email', emails);
           prefs.setString('noTelp', noTelps);
           prefs.setString('token', tokens);  
+
+          _pageRoutesAfterLogin();
              });          
-          break;
-        default:     
+          break;          
+        default:
+          showMyDialog(
+            "",
+            message,
+            values == "1"? Colors.greenAccent : Colors.red ,
+            (){ Navigator.pop(context, 'Cancel'); },
+            (){ Navigator.pop(context, 'Cancel'); },
+            "Close","",
+            Colors.white,
+            Colors.black,      
+            Colors.red,      
+          );                
       }  
     });
   } 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gramed/api/api.dart';
 import 'package:gramed/api/postlist.dart';
+import 'package:gramed/drawer.dart';
 import 'package:gramed/service.dart';
 
 class User extends StatefulWidget {
@@ -12,6 +13,7 @@ class User extends StatefulWidget {
 
 class _UserState extends State<User> {
 
+  @override
   void initState() {
     super.initState();
     _getPref();
@@ -22,30 +24,31 @@ class _UserState extends State<User> {
   List<PostList?> _listUser = [];
   List<PostList?> _allListUser = [];
   bool _loading = false ;
+
   late String value = "";
   late String idUsersApp = "";
-  late String nmUser = "";
+  late String name = "";
   late String username = "";
   late String password = "";
-  late String tokenUsers = "";
-  late String userFoto = "";
-  late String telp = "";
-  late String email = "";
+  late String address = "";
   late String level = "";
-  
+  late String email = "";
+  late String noTelp = "";
+  late String token = "";
+
   Future<void> _getPref() async {
     Service.getPref().then((preferences) {
       setState(() {
         value = preferences.getString('value');
         idUsersApp = preferences.getString('idUsersApp');
-        nmUser = preferences.getString('nmUser');
+        name = preferences.getString('name');
         username = preferences.getString('username');
         password = preferences.getString('password');
-        tokenUsers = preferences.getString('tokenUsers');
-        userFoto = preferences.getString('userFoto');
-        telp = preferences.getString('telp');
-        email = preferences.getString('email');
+        address = preferences.getString('address');
         level = preferences.getString('level');
+        email = preferences.getString('email');
+        noTelp = preferences.getString('noTelp');
+        token = preferences.getString('token');
       });
     });
   }
@@ -475,7 +478,7 @@ bool appBarf = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(),
+      drawer: const Drawers(),
             appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.all(8.0),

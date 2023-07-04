@@ -14,34 +14,44 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
      _getPref();
     super.initState();
+    _cekLogin();
   }
+
   late String value = "";
   late String idUsersApp = "";
-  late String nmUser = "";
+  late String name = "";
   late String username = "";
-  late String pasword = "";
-  late String pt = "";
-  late String alamat = "";
+  late String password = "";
+  late String address = "";
   late String level = "";
+  late String email = "";
+  late String noTelp = "";
+  late String token = "";
 
   Future<void> _getPref() async {
     Service.getPref().then((preferences) {
       setState(() {
-        value = preferences.getString('value').toString();
-        idUsersApp = preferences.getString('idUsersApp').toString();
-        nmUser = preferences.getString('nmUser').toString();
-        username = preferences.getString('username').toString();
-        pasword = preferences.getString('pasword').toString();
-        pt = preferences.getString('pt').toString();
-        alamat = preferences.getString('alamat').toString();
-        level = preferences.getString('level').toString();
-
-        if (value == "1") {
-          PageRoutes.routeToHome(context);                    
-        }else{
-          PageRoutes.routeToHome(context);
-        }
+        value = preferences.getString('value');
+        idUsersApp = preferences.getString('idUsersApp');
+        name = preferences.getString('name');
+        username = preferences.getString('username');
+        password = preferences.getString('password');
+        address = preferences.getString('address');
+        level = preferences.getString('level');
+        email = preferences.getString('email');
+        noTelp = preferences.getString('noTelp');
+        token = preferences.getString('token');
       });
+    });
+  }
+
+  _cekLogin(){
+    setState(() {
+      if (name =="") {
+        PageRoutes.routeToLogin(context);
+      }else{
+        PageRoutes.routeToHome(context);
+      }
     });
   }
     
@@ -52,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: CircularProgressIndicator(
           backgroundColor: Colors.blue,
           color: Colors.white,
-    ),
+        ),
       ),
     );
   }

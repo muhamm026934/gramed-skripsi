@@ -4,6 +4,10 @@ class PostList {
   late String judul;
   late String penerbit;
   late String pengarang;
+  late String price;
+  late String diskon;
+  late String netPrice;
+  late String potonganHarga;
   late String tahun;
   late String description; 
   late String imageBook;
@@ -36,6 +40,10 @@ class PostList {
     required this.judul,
     required this.penerbit,
     required this.pengarang,
+    required this.price,
+    required this.diskon,
+    required this.netPrice,
+    required this.potonganHarga,
     required this.tahun,
     required this.description,
     required this.imageBook,
@@ -71,6 +79,10 @@ class PostList {
       judul: json['judul'] ?? "", 
       penerbit: json['penerbit'] ?? "",
       pengarang: json['pengarang'] ?? "",
+      price: json['price'] ?? "",
+      diskon: json['diskon'] ?? "",
+      netPrice: json['net_price'] ?? "",
+      potonganHarga: json['potongan_harga'] ?? "",
       tahun: json['tahun'] ?? "",
       description: json['description'] ?? "",
       imageBook: json['image_book'] ?? "",
