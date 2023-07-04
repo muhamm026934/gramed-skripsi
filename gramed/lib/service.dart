@@ -5,16 +5,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api/api.dart';
 
 class Service {
-
     static Future writeSR(
     String value,
     String idUsersApp,
-    String nmUser,
+    String name,
     String username,
-    String pasword,
-    String pt,
-    String alamat,
-    String level) async {
+    String password,
+    String address,
+    String email,
+    String noTelp,
+    String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs;
   }
@@ -23,6 +23,21 @@ class Service {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs;
   }
+
+  static Future logins(username,password) async{
+    var map = FormData.fromMap({
+        'ACTION': 'LOGIN',
+        'username': username,
+        'password': password,
+      });  
+    var dio = Dio();
+    final response = await dio.post(ApiUrl.login, data: map);
+
+    final listUser  = jsonDecode(response.data);
+    print(listUser);
+    return listUser;
+  } 
+
 
   static Future <List<PostList>> functionUploadDataBuku(action , idBuku,cBookJudul, cBookPenerbit, 
   cBookPengarang ,cBookTahun ,cBookDeskripsi,filePaths, fileName, idUser) async{
@@ -97,9 +112,8 @@ class Service {
     var dio = Dio();
     final response = await dio.post(ApiUrl.viewDataUser, data: map);
 
-    List<PostList> listTeam  = parseResponse(response.data);
-    print(listTeam);
-    return listTeam;
+    List<PostList> listUser  = parseResponse(response.data);
+    return listUser;
   }
 
   static Future <List<PostList>> functionUploadDataUser(action , cUserId ,cName, cUsername, cPassword1 , cPassword2,
@@ -128,7 +142,7 @@ class Service {
     : await dio.post(ApiUrl.user, data: map);
     print(action);      
     print(response.statusCode);
-    print("cUserId $cUserId"); 
+    print("cUserId $cUserId");
     List<PostList> list  = parseResponse(response.data);
     return list;
   }  

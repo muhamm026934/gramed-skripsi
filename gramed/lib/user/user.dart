@@ -62,7 +62,7 @@ class _UserState extends State<User> {
       });
     });
   }
-
+    TextEditingController cSearch = TextEditingController();
     TextEditingController cUserId = TextEditingController();
     TextEditingController cName = TextEditingController();
     TextEditingController cUsername = TextEditingController();
@@ -101,20 +101,22 @@ class _UserState extends State<User> {
       message = _messageUpload[0]!.message.toString();
       values = _messageUpload[0]!.value.toString();   
       print("message $message");
-      print(values);    
+      print(values);  
       
       if (values == "1") {
         setState(() {
-          _messageUpload.clear();
-          message ="";
-          values ="";
-          _clearCtext();
+          _commandAlertMessage("", "", false);
           _commandFormUpdateAdd("", false);
+          _commandAlertMessageResponse(values, message, true);
           _getDataUser("","","","","","");
+          _messageUpload.clear();
+          _clearCtext();    
+          message ="";
+          values ="";                
         });
       }else{
         setState(() {
-        
+        _commandAlertMessageResponse(values, message, true);
         });
       }
     });
@@ -152,6 +154,143 @@ class _UserState extends State<User> {
     });
   }
 
+  String titleText = "";
+  bool tampilAlertMessage = false;
+
+  _commandAlertMessage(headers, titles, tampilAlertMessages){
+    setState(() {
+      textFormUpdateAdd = headers;
+      headerText = headers;
+      titleText = titles;
+      tampilAlertMessage = tampilAlertMessages;
+    });
+  }
+
+  TextStyle _customFont() {
+  return const TextStyle(color: Colors.white);
+  }
+
+  _alertMessage(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: 
+            textFormUpdateAdd == ApiUrl.tambahUserText || headerText == ApiUrl.tambahUserText 
+            ? Colors.green
+            :textFormUpdateAdd == ApiUrl.editUserText || headerText == ApiUrl.editUserText 
+            ? Colors.orange
+            :textFormUpdateAdd == ApiUrl.deleteUserText || headerText == ApiUrl.deleteUserText
+            ? Colors.red
+            : Colors.blue,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(headerText, style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(titleText, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Card(
+                      color: Colors.blue,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('OK',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          _functionUploadDataUser();
+                        },
+                      ),
+                    ),   
+                    Card(
+                      color: Colors.orangeAccent,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('Batal',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          _commandAlertMessage(headerText, "", false);
+                        },
+                      ),
+                    ),                              
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String valueResponse = "";
+  String messageResponse = "";
+  bool tampilAlertMessageResponse = false;
+  _commandAlertMessageResponse(valueResponses, messageResponses, tampilAlertMessageResponses){
+    setState(() {
+      valueResponse = valueResponses;
+      messageResponse = messageResponses;
+      tampilAlertMessageResponse = tampilAlertMessageResponses;
+    });
+  }
+
+  _alertMessageResponse(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: valueResponse == "1" ? Colors.green: Colors.red,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(messageResponse, style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(titleText, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Card(
+                  color: Colors.orangeAccent,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    surfaceTintColor: Colors.blue,
+                    padding: const EdgeInsets.all(10.0),
+                    textStyle: const TextStyle(fontSize: 12),
+                    ), child: const Text('Keluar',style: TextStyle(color: Colors.white),),
+                    onPressed: (){
+                      _commandAlertMessageResponse("", "", false);
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   _formUpdateAdd(){
     return Center(
@@ -304,7 +443,13 @@ class _UserState extends State<User> {
                             textStyle: const TextStyle(fontSize: 12),
                             ), child: const Text('Simpan Data',style: TextStyle(color: Colors.white),),
                             onPressed: (){
-                              _functionUploadDataUser();
+                              textFormUpdateAdd == ApiUrl.tambahUserText
+                              ?_commandAlertMessage(ApiUrl.tambahUserText,"Pastikan Data Benar",true)
+                              :textFormUpdateAdd == ApiUrl.editUserText
+                              ?_commandAlertMessage(ApiUrl.editUserText,"Apakah Data User Akan Diubah ?",true)
+                              :textFormUpdateAdd == ApiUrl.deleteUserText
+                              ?_commandAlertMessage(ApiUrl.deleteUserText,"Apakah Data User Akan Dihapus ?",true)
+                              :_commandFormUpdateAdd("", false);
                             },
                           ),
                         ),                     
@@ -320,20 +465,46 @@ class _UserState extends State<User> {
     );
   }
 
+bool appBarf = false;
+ _appBarF(){
+  setState(() {
+    appBarf = !appBarf;
+  });
+ }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const Drawer(),
             appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: TextField(
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white)
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: cSearch,
+                  decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)
+                    ),
+                    label: Text("Pencarian User",style: TextStyle(fontSize: 10,color: Colors.white),),
+                  ),                
+                ),
               ),
-              label: Text("Pencarian User",style: TextStyle(fontSize: 10,color: Colors.white),),
-            ),                
+              appBarf == false 
+              ? IconButton(onPressed: (){
+                _appBarF();
+                _getDataUser("","",cSearch.text,"","","");
+              }, icon: const Icon(Icons.search,size: 20.0))
+              : IconButton(onPressed: (){
+                _appBarF();
+                _getDataUser("","","","","","");
+                setState(() {
+                  cSearch.text = "";
+                });
+              }, icon: const Icon(Icons.close,size: 20.0))
+            ],
           ),
         ),
       ),
@@ -349,7 +520,10 @@ class _UserState extends State<User> {
                   title: Text(listDataUser!.name),
                   subtitle: Text(listDataUser.username),
                   leading: IconButton(onPressed: (){
-                    
+                    setState(() {
+                      cUserId.text = listDataUser.idUser;
+                    });
+                    _commandAlertMessage(ApiUrl.deleteUserText, listDataUser.name, true);
                   }, icon: const Icon(Icons.delete,color: Colors.white,)),
                   trailing: IconButton(onPressed: (){
                     _editDataUser(
@@ -371,11 +545,18 @@ class _UserState extends State<User> {
           ),
             tampilFormUpdateAdd == true
             ? _formUpdateAdd()
-            : Container()          
+            : Container(),
+            tampilAlertMessage == true
+            ? _alertMessage()
+            : Container(),         
+            tampilAlertMessageResponse == true
+            ? _alertMessageResponse()
+            : Container(),            
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          _clearCtext();
           _commandFormUpdateAdd(ApiUrl.tambahUserText, true);
         },
         backgroundColor: Colors.green,

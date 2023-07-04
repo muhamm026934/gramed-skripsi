@@ -220,7 +220,7 @@ class _BookState extends State<Book> {
                         textStyle: const TextStyle(fontSize: 12),
                         ), child: const Text('Batal',style: TextStyle(color: Colors.white),),
                         onPressed: (){
-                          _commandAlertMessage("", "", false);
+                          _commandAlertMessage(headerText, "", false);
                         },
                       ),
                     ),                              
