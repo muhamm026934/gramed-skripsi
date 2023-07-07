@@ -14,7 +14,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
      _getPref();
     super.initState();
-    _cekLogin();
   }
 
   late String value = "";
@@ -41,20 +40,15 @@ class _SplashScreenState extends State<SplashScreen> {
         email = preferences.getString('email');
         noTelp = preferences.getString('noTelp');
         token = preferences.getString('token');
+        if (name == "") {
+          PageRoutes.routeToLogin(context);
+        }else{
+          PageRoutes.routeToHome(context);
+        }
       });
     });
   }
-
-  _cekLogin(){
-    setState(() {
-      if (name =="") {
-        PageRoutes.routeToLogin(context);
-      }else{
-        PageRoutes.routeToHome(context);
-      }
-    });
-  }
-    
+   
   @override
   Widget build(BuildContext context) {
     return const Scaffold(

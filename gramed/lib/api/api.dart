@@ -1,5 +1,5 @@
 class ApiUrl {
-  static String server = "http://192.168.1.6:8080/gramed";
+  static String server = "http://192.168.1.3:8080/gramed";
   static String tambahBukuText = "Tambah Buku";
   static String editBukuText = "Edit Buku";
   static String deleteBukuText = "Hapus Data Buku";
