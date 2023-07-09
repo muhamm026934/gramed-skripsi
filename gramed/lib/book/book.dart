@@ -98,6 +98,11 @@ class _BookState extends State<Book> {
     TextEditingController cBookGRQty = TextEditingController();
     TextEditingController cBookGRTgl = TextEditingController();
 
+    TextEditingController cStockBookId = TextEditingController();
+    TextEditingController cStockBookGrDate = TextEditingController();
+    TextEditingController cStockBookGrQty = TextEditingController();
+    TextEditingController cStockBookNoNota = TextEditingController();
+
   List<PostList?> _listBuku = [];
 
   _getDataBuku(action,idBuku,judulBuku,penerbit,tahun) async{
@@ -553,6 +558,133 @@ class _BookState extends State<Book> {
   });
  }
 
+  bool cFormUpdateAddBook = false;
+  String textFormUpdateAddBook = "" , idStockBook = "", idBook = "";
+ _commandFormUpdateAddBook(idStockBooks,idBooks,cFormUpdateAddBooks,textFormUpdateAddBooks){
+  setState(() {
+    idBook = idBooks;
+    cFormUpdateAddBook = cFormUpdateAddBooks;
+    cFormUpdateAddBook = !cFormUpdateAddBook;
+    textFormUpdateAddBook = textFormUpdateAddBooks;
+    idStockBook = idStockBooks;
+    print("object");
+    print(idStockBook);
+    print(idBook);
+    print(cFormUpdateAddBook);
+
+  });
+ }
+
+  _formUpdateAddBook(){
+    return GestureDetector(
+      onTap: (){
+      _commandFormUpdateAddBook(
+            "",
+            "",
+            true,
+            "");
+      },
+      child: Container(
+        color: Colors.black38,
+        child: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width* 0.8,
+            height: MediaQuery.of(context).size.height* 0.6, 
+            child: Card(
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left :12.0,right :5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(child: Text(textFormUpdateAddBook)),
+                        IconButton(
+                          color: Colors.red,
+                          onPressed: (){
+                            _commandFormUpdateAddBook(
+                                  "",
+                                  "",
+                                  true,
+                                  "");
+                          }, icon: const Icon(Icons.close,size: 20.0,)),
+                      ],
+                    ),
+                  ),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        enabled: headerText == ApiUrl.detailBukuText ?false : true,
+                        controller: cStockBookGrQty,
+                        decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue)
+                          ),
+                          label: Text("Jumlah Buku",style: TextStyle(fontSize: 10,color: Colors.blue),),
+                        ), 
+                      ),
+                    ),
+                  ),  
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: TextField(
+                        keyboardType: TextInputType.datetime,
+                        enabled: headerText == ApiUrl.detailBukuText ?false : true,
+                        controller: cStockBookGrDate,
+                        decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue)
+                          ),
+                          label: Text("Tanggal Terima Buku",style: TextStyle(fontSize: 10,color: Colors.blue),),
+                        ), 
+                      ),
+                    ),
+                  ),  
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: TextField(
+                        enabled: headerText == ApiUrl.detailBukuText ?false : true,
+                        controller: cStockBookNoNota,
+                        decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue)
+                          ),
+                          label: Text("Nomor Nota",style: TextStyle(fontSize: 10,color: Colors.blue),),
+                        ), 
+                      ),
+                    ),
+                  ),   
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card(
+                      color: Colors.green,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('Simpan Data',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          
+                        },
+                      ),
+                    ),
+                  ),                          
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
  _dataBook(){
   return ListView.builder(
     itemCount: _listBuku.length,
@@ -629,6 +761,19 @@ class _BookState extends State<Book> {
                         );                                  
                       }, icon: const Icon(Icons.edit,color: Colors.orange)),
                     ),
+                    Card(child: IconButton(onPressed: (){
+                        _commandFormUpdateAddBook(
+                          listDataBuku.idStock,
+                          listDataBuku.idBuku,
+                          false,
+                          "Tambah Stock Buku ${listDataBuku.judul}");
+                      
+                    }, icon: const Icon(Icons.add,color: Colors.green))),   
+                    Card(child: IconButton(onPressed: (){
+                      setState(() {
+                      });
+                      
+                    }, icon: const Icon(Icons.book_online,color: Colors.green))),                                      
                   ],
                 ),
               ):Container()
@@ -671,6 +816,9 @@ class _BookState extends State<Book> {
                 ),
               ),
             ),
+            cFormUpdateAddBook == true
+            ? _formUpdateAddBook()
+            : Container(),
             tampilFormUpdateAdd == true
             ? _formUpdateAdd()
             :Container(),

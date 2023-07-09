@@ -33,7 +33,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getPref();
     _getDataBuku("","","","","");
@@ -122,49 +121,53 @@ class _HomeState extends State<Home> {
     });
   }
   _formAdd(){
-    return GestureDetector(
-      onTap: (){
-        _openFormAdd(tags,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals);
-      },
-      child: Center(
-        child: Container(
-          height: MediaQuery.of(context).size.height* 0.9,  
-          color: Colors.black12,
-          child: Card(
+    return Container(
+      color: Colors.black38,
+      child: GestureDetector(
+        onTap: (){
+          _openFormAdd(tags,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals);
+        },
+        child: Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height* 0.9,  
+            width: MediaQuery.of(context).size.width* 0.9,  
+            color: Colors.black12,
             child: Card(
-                  color: Colors.blue,
-                  child: ListView(
-                    children: [
-                      Image.network(ApiUrl.viewImageBuku+images),
-                      Text("Harga : $hargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
-                      Text("Diskon : $diskons % / $potonganHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
-                      Text("Harga Setelah Diskon : $netHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
-                      Text("Judul : $juduls",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
-                      Text("Deskripsi : $deskripsis",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [                          
-                          Card(
-                            color: Colors.white,
-                            child: IconButton(onPressed: (){
-                              _deductFuntion();
-                            }, icon: const Icon(Icons.remove),color: Colors.black,)),
-                          Text("$qtyBeli",style: const TextStyle(fontSize: 18,color: Colors.white),),
-                          Card(
-                            color: Colors.white,
-                            child: IconButton(onPressed: (){
-                              _addFuntion();
-                            }, icon: const Icon(Icons.add),color: Colors.black))
-                        ],
-                      ),           
-                      Text(CurrencyFormat.convertToIdr(jmlBayar, 2),textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),           
-                      Card(child: OutlinedButton.icon(onPressed: (){
-                        PageRoutes.routeToWebViewPay(context);
-                      }, icon: const Icon(Icons.monetization_on), label: const Text("Pembayaran"))),                   
-                      Card(child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang")))
-                    ],
-                  ),
-                )
+              child: Card(
+                    color: Colors.blue,
+                    child: ListView(
+                      children: [
+                        Image.network(ApiUrl.viewImageBuku+images),
+                        Text("Harga : $hargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Diskon : $diskons % / $potonganHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Harga Setelah Diskon : $netHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Judul : $juduls",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Deskripsi : $deskripsis",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [                          
+                            Card(
+                              color: Colors.white,
+                              child: IconButton(onPressed: (){
+                                _deductFuntion();
+                              }, icon: const Icon(Icons.remove),color: Colors.black,)),
+                            Text("$qtyBeli",style: const TextStyle(fontSize: 18,color: Colors.white),),
+                            Card(
+                              color: Colors.white,
+                              child: IconButton(onPressed: (){
+                                _addFuntion();
+                              }, icon: const Icon(Icons.add),color: Colors.black))
+                          ],
+                        ),           
+                        Text(CurrencyFormat.convertToIdr(jmlBayar, 2),textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),           
+                        Card(child: OutlinedButton.icon(onPressed: (){
+                          PageRoutes.routeToWebViewPay(context);
+                        }, icon: const Icon(Icons.monetization_on), label: const Text("Pembayaran"))),                   
+                        Card(child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang")))
+                      ],
+                    ),
+                  )
+            ),
           ),
         ),
       ),
