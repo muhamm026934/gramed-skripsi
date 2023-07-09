@@ -133,7 +133,6 @@ class _HomeState extends State<Home> {
           child: Card(
             child: Card(
                   color: Colors.blue,
-                  child: Hero(tag: tags,
                   child: ListView(
                     children: [
                       Image.network(ApiUrl.viewImageBuku+images),
@@ -161,10 +160,10 @@ class _HomeState extends State<Home> {
                       Text(CurrencyFormat.convertToIdr(jmlBayar, 2),textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),           
                       Card(child: OutlinedButton.icon(onPressed: (){
                         PageRoutes.routeToWebViewPay(context);
-                      }, icon: Icon(Icons.monetization_on), label: Text("Pembayaran"))),                   
+                      }, icon: const Icon(Icons.monetization_on), label: const Text("Pembayaran"))),                   
                       Card(child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang")))
                     ],
-                  )),
+                  ),
                 )
           ),
         ),
@@ -181,21 +180,29 @@ class _HomeState extends State<Home> {
           CustomScrollView(
             slivers: [
               SliverAppBar(
+                toolbarHeight: 80.0,
                 backgroundColor: Colors.blue,
                 shadowColor: Colors.blue,
-                title: Container(
+                title: const Card(
                   color: Colors.blue,
-                  child: const TextField(
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)
-                      ),
-                      label: Text("Pencarian Judul Buku",style: TextStyle(fontSize: 10,color: Colors.white),),
-                    ),                
+                  child: Padding(
+                    padding: EdgeInsets.all(1.0),
+                    child: TextField(
+                      cursorColor: Colors.white,
+                      obscureText: false,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)
+                        ),
+                        label: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("Pencarian Judul Buku",style: TextStyle(fontSize: 10,color: Colors.white),),
+                        ),
+                      ),                
+                    ),
                   ),
                 ),
-                expandedHeight: 300,
+                expandedHeight: 350,
                 floating: false,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
@@ -302,22 +309,19 @@ class _HomeState extends State<Home> {
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context,index)=> 
-                          Hero(
-                            tag: _listBuku[index]!.idBook.toString(),
+                          Card(
+                            color: Colors.white,
                             child: Card(
-                              color: Colors.white,
-                              child: Card(
-                                color: Colors.blue,
-                                child: Container(
-                                  width: 150.0,
-                                  margin: const EdgeInsets.all(10),
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        Expanded(child: Image.network(ApiUrl.viewImageBuku+_listBuku[index]!.imageBook)),
-                                        Text(_listBuku[index]!.judul.toString(),textAlign: TextAlign.center,style:const TextStyle(color: Colors.white,fontSize: 12.0)),
-                                      ],
-                                    ),
+                              color: Colors.blue,
+                              child: Container(
+                                width: 150.0,
+                                margin: const EdgeInsets.all(10),
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      Expanded(child: Image.network(ApiUrl.viewImageBuku+_listBuku[index]!.imageBook)),
+                                      Text(_listBuku[index]!.judul.toString(),textAlign: TextAlign.center,style:const TextStyle(color: Colors.white,fontSize: 12.0)),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -357,7 +361,7 @@ class _HomeState extends State<Home> {
                               padding: const EdgeInsets.all(8.0),
                               child: Image.network(ApiUrl.viewImageBuku+_listBuku[index]!.imageBook),
                             ),
-                            title: Text(_listBuku[index]!.hargaJual.toString(),
+                            title: Text(_listBuku[index]!.judul.toString(),
                               style: const TextStyle(
                                   color: Colors.white),
                             ),

@@ -31,6 +31,7 @@ class _DrawersState extends State<Drawers> {
   late String email = "";
   late String noTelp = "";
   late String token = "";
+  late String nameUser = "";
 
   Future<void> _getPref() async {
     Service.getPref().then((preferences) {
@@ -128,33 +129,12 @@ class _DrawersState extends State<Drawers> {
             ),
             child:Stack(
               children: [
-                const Center(
+                Center(
                   child: Padding(
-                    padding: EdgeInsets.all(1.0),
-                    child: CircleAvatar(
-                      radius: 50.0,
-                      backgroundColor: Colors.white,
-                    ),
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(name,style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)
                   ),
                 ),
-                Positioned(
-                  top: 90,
-                  left: 75,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Container(
-                      color: Colors.blue,
-                      child: IconButton(onPressed: (){}, icon: const Icon(Icons.photo,color: Colors.white,size: 17.0,))),
-                  )),
-                Positioned(
-                  top: 90,
-                  right: 75,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Container(
-                      color: Colors.transparent,
-                      child: IconButton(onPressed: (){}, icon: const Icon(Icons.edit,color: Colors.white,size: 17.0))),
-                  )),
                 ],
               )
             ),

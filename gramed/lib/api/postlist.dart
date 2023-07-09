@@ -5,6 +5,7 @@ class PostList {
   late String penerbit;
   late String pengarang;
   late String price;
+  late String priceBuku;
   late String diskon;
   late String netPrice;
   late String potonganHarga;
@@ -42,6 +43,7 @@ class PostList {
     required this.penerbit,
     required this.pengarang,
     required this.price,
+    required this.priceBuku,
     required this.diskon,
     required this.netPrice,
     required this.potonganHarga,
@@ -82,6 +84,7 @@ class PostList {
       penerbit: json['penerbit'] ?? "",
       pengarang: json['pengarang'] ?? "",
       price: json['price'] ?? "",
+      priceBuku: json['price_buku'] ?? "",
       diskon: json['diskon'] ?? "",
       netPrice: json['net_price'] ?? "",
       potonganHarga: json['potongan_harga'] ?? "",

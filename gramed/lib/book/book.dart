@@ -334,7 +334,7 @@ class _BookState extends State<Book> {
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: SizedBox(
-            width: MediaQuery.of(context).size.width* 0.8,
+            width: MediaQuery.of(context).size.width* 0.9,
             height: MediaQuery.of(context).size.height* 0.9,
             child: ListView(
               children:  [
@@ -603,7 +603,7 @@ class _BookState extends State<Book> {
                                         listDataBuku.judul,
                                         listDataBuku.penerbit,
                                         listDataBuku.pengarang,
-                                        listDataBuku.price,
+                                        listDataBuku.priceBuku,
                                         listDataBuku.diskon,
                                         listDataBuku.tahun,
                                         listDataBuku.description,
@@ -613,7 +613,7 @@ class _BookState extends State<Book> {
                                 }, icon: Icon(Icons.remove_red_eye,color: _colorIcon())),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(bottom:8.0),
+                                padding: const EdgeInsets.all(8.0),
                                 child: Text("Deskripsi : ${listDataBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
                               ), 
                               Padding(
@@ -646,7 +646,7 @@ class _BookState extends State<Book> {
                                         listDataBuku.judul,
                                         listDataBuku.penerbit,
                                         listDataBuku.pengarang,
-                                        listDataBuku.price,
+                                        listDataBuku.priceBuku,
                                         listDataBuku.diskon,
                                         listDataBuku.tahun,
                                         listDataBuku.description,

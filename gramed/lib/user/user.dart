@@ -22,7 +22,6 @@ class _UserState extends State<User> {
   }
 
   List<PostList?> _listUser = [];
-  List<PostList?> _allListUser = [];
   bool _loading = false ;
 
   late String value = "";
@@ -60,7 +59,6 @@ class _UserState extends State<User> {
     Service.getDataUser(action,idUsers,names,usernames,levels,noTelps).then((value) async {
       setState(() {
         _listUser = value;
-        _allListUser = value;
         _loading = false;
       });
     });
