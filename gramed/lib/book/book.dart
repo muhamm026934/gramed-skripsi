@@ -311,7 +311,7 @@ class _BookState extends State<Book> {
       titleText = titles;
       tampilAlertMessage = tampilAlertMessages;
     });
-  }
+  }  
 
   _editDataBuku(cBookIds,cBookJuduls,cBookPenerbits,cBookPengarangs,cPrices,cDiskons,cBookTahuns,cBookDeskripsis,imageBook,headers){
     setState(() {
@@ -553,6 +553,93 @@ class _BookState extends State<Book> {
   });
  }
 
+ _dataBook(){
+  return ListView.builder(
+    itemCount: _listBuku.length,
+    scrollDirection: Axis.vertical,
+    itemBuilder: (context,index){
+      final listDataBuku = _listBuku[index]; 
+      return GestureDetector(
+        onLongPress: (){
+          _onLOngPress();
+        },
+        child: Card(
+          color: Colors.blue,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text("Judul : ${listDataBuku!.judul}",style: _customFont()),
+                subtitle: Text("Penerbit : ${listDataBuku.penerbit}",style: _customFont(),),
+                leading: Image.network(ApiUrl.viewImageBuku+listDataBuku.imageBook),
+                trailing: IconButton(onPressed: (){
+                        _editDataBuku(
+                        listDataBuku.idBuku, 
+                        listDataBuku.judul,
+                        listDataBuku.penerbit,
+                        listDataBuku.pengarang,
+                        listDataBuku.priceBuku,
+                        listDataBuku.diskon,
+                        listDataBuku.tahun,
+                        listDataBuku.description,
+                        listDataBuku.imageBook,
+                        ApiUrl.detailBukuText
+                        );                                    
+                }, icon: Icon(Icons.remove_red_eye,color: _colorIcon())),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Deskripsi : ${listDataBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+              ), 
+              Padding(
+                padding: const EdgeInsets.only(bottom:8.0),
+                child: Text("Harga : Rp. ${listDataBuku.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+              ), 
+              Padding(
+                padding: const EdgeInsets.only(bottom:8.0),
+                child: 
+                listDataBuku.price != listDataBuku.netPrice
+                ? Text("Harga Setelah Diskon ${listDataBuku.diskon}% : Rp. ${listDataBuku.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
+                : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
+              ), 
+              onLongPress == true                        
+              ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Card(child: IconButton(onPressed: (){
+                      setState(() {
+                        cBookId.text = listDataBuku.idBuku;
+                      });
+                      _commandAlertMessage(ApiUrl.deleteBukuText, listDataBuku.judul, true);
+                    }, icon: const Icon(Icons.delete_forever,color: Colors.red))),
+                    Card(
+                      child: IconButton(onPressed: (){
+                      _editDataBuku(
+                        listDataBuku.idBuku,
+                        listDataBuku.judul,
+                        listDataBuku.penerbit,
+                        listDataBuku.pengarang,
+                        listDataBuku.priceBuku,
+                        listDataBuku.diskon,
+                        listDataBuku.tahun,
+                        listDataBuku.description,
+                        listDataBuku.imageBook,
+                        ApiUrl.editBukuText
+                        );                                  
+                      }, icon: const Icon(Icons.edit,color: Colors.orange)),
+                    ),
+                  ],
+                ),
+              ):Container()
+            ],
+          ),
+        ),
+      );
+    }
+  );
+ }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -580,90 +667,7 @@ class _BookState extends State<Book> {
                 height: MediaQuery.of(context).size.height * 1,
                 child: ScrollConfiguration(
                   behavior: WebCustomScrollBehavior(),
-                  child: ListView.builder(
-                    itemCount: _listBuku.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context,index){
-                      final listDataBuku = _listBuku[index]; 
-                      return GestureDetector(
-                        onLongPress: (){
-                          _onLOngPress();
-                        },
-                        child: Card(
-                          color: Colors.blue,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text("Judul : ${listDataBuku!.judul}",style: _customFont()),
-                                subtitle: Text("Penerbit : ${listDataBuku.penerbit}",style: _customFont(),),
-                                leading: Image.network(ApiUrl.viewImageBuku+listDataBuku.imageBook),
-                                trailing: IconButton(onPressed: (){
-                                        _editDataBuku(
-                                        listDataBuku.idBuku, 
-                                        listDataBuku.judul,
-                                        listDataBuku.penerbit,
-                                        listDataBuku.pengarang,
-                                        listDataBuku.priceBuku,
-                                        listDataBuku.diskon,
-                                        listDataBuku.tahun,
-                                        listDataBuku.description,
-                                        listDataBuku.imageBook,
-                                        ApiUrl.detailBukuText
-                                        );                                    
-                                }, icon: Icon(Icons.remove_red_eye,color: _colorIcon())),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Deskripsi : ${listDataBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
-                              ), 
-                              Padding(
-                                padding: const EdgeInsets.only(bottom:8.0),
-                                child: Text("Harga : Rp. ${listDataBuku.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
-                              ), 
-                              Padding(
-                                padding: const EdgeInsets.only(bottom:8.0),
-                                child: 
-                                listDataBuku.price != listDataBuku.netPrice
-                                ? Text("Harga Setelah Diskon ${listDataBuku.diskon}% : Rp. ${listDataBuku.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
-                                : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
-                              ), 
-                              onLongPress == true                        
-                              ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Card(child: IconButton(onPressed: (){
-                                      setState(() {
-                                        cBookId.text = listDataBuku.idBuku;
-                                      });
-                                      _commandAlertMessage(ApiUrl.deleteBukuText, listDataBuku.judul, true);
-                                    }, icon: const Icon(Icons.delete_forever,color: Colors.red))),
-                                    Card(
-                                      child: IconButton(onPressed: (){
-                                      _editDataBuku(
-                                        listDataBuku.idBuku,
-                                        listDataBuku.judul,
-                                        listDataBuku.penerbit,
-                                        listDataBuku.pengarang,
-                                        listDataBuku.priceBuku,
-                                        listDataBuku.diskon,
-                                        listDataBuku.tahun,
-                                        listDataBuku.description,
-                                        listDataBuku.imageBook,
-                                        ApiUrl.editBukuText
-                                        );                                  
-                                      }, icon: const Icon(Icons.edit,color: Colors.orange)),
-                                    ),
-                                  ],
-                                ),
-                              ):Container()
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  ),
+                  child: _dataBook(),
                 ),
               ),
             ),
