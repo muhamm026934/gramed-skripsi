@@ -105,6 +105,53 @@ class Service {
     return listTeam;
   }
 
+  static Future <List<PostList>> functionUploadDataStockBuku(
+    action, cStockBookId ,idBook, cStockBookGrDate ,cStockBookNoNota,cStockBookGrQty,
+    idUsersApp) async{
+    String tglInput = DateTime.now().toString();
+    var map = 
+    FormData.fromMap({
+        'ACTION': action,
+        'id_stock': cStockBookId.toString(),
+        'id_book': idBook.toString(),
+        'qty_gr': cStockBookGrQty.toString(),
+        'date_gr': cStockBookGrDate.toString(),
+        'no_note': cStockBookNoNota.toString(),
+        'id_user_input_stock': idUsersApp.toString(),
+        'date_user_input_stock': tglInput,        
+      });
+    var dio = Dio();
+    final response = 
+    action == ApiUrl.tambahStockBukuText
+    ? await dio.post(ApiUrl.addDataStockBuku, data: map)
+    : action == ApiUrl.deleteStockBukuText
+    ? await dio.post(ApiUrl.deleteDataStockBuku, data: map)
+    : action == ApiUrl.editStockBukuText
+    ? await dio.post(ApiUrl.editDataStockBuku, data: map)
+    : await dio.post(ApiUrl.stockBook, data: map);
+    print(action);    
+    print(response.statusCode); 
+    List<PostList> list  = parseResponse(response.data);
+    return list;
+  }   
+  
+
+  static Future<List<PostList>> getStockDataBuku(action,idStock,idBuku,tglGr,noNota,idUsersApp) async{
+    var map = FormData.fromMap({
+        'ACTION': action,
+        'id_stock': idStock,
+        'id_book': idBuku,
+        'date_gr': tglGr,
+        'no_note': noNota,
+        'id_user_input_stock': idUsersApp,
+      });  
+    var dio = Dio();
+    final response = await dio.post(ApiUrl.viewDataStockBuku, data: map);
+
+    List<PostList> listTeam  = parseResponse(response.data);
+    return listTeam;
+  }
+
   static Future<List<PostList>> getDataUser(action,idUser,name,username,level,noTelp) async{
     var map = FormData.fromMap({
         'ACTION': action,
@@ -123,7 +170,6 @@ class Service {
 
   static Future <List<PostList>> functionUploadDataUser(action , cUserId ,cName, cUsername, cPassword1 , cPassword2,
   cAddress ,cLevel,cEmail, cNoTelp, idUsersApp) async{
-    String tglInput = DateTime.now().toString();
     var map = FormData.fromMap({
         'ACTION': action,
         'id_user': cUserId.toString(),

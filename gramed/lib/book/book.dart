@@ -95,8 +95,7 @@ class _BookState extends State<Book> {
     TextEditingController cBookTahun = TextEditingController();
     TextEditingController cBookDeskripsi = TextEditingController();
     TextEditingController cBookImage = TextEditingController();
-    TextEditingController cBookGRQty = TextEditingController();
-    TextEditingController cBookGRTgl = TextEditingController();
+
 
     TextEditingController cStockBookId = TextEditingController();
     TextEditingController cStockBookGrDate = TextEditingController();
@@ -168,8 +167,6 @@ class _BookState extends State<Book> {
     cDiskon.text = "";
     cBookTahun.text = "";
     cBookDeskripsi.text = "";
-    cBookGRQty.text = "";
-    cBookGRTgl.text = "";
     cBookImage.text = "";
   });
  }
@@ -575,6 +572,39 @@ class _BookState extends State<Book> {
   });
  }
 
+ String messageStockBuku = "", valuesStockBuku = "";
+ List<PostList?> _messageUploadStockbuku = [];
+
+ _functionUploadDataStockBuku() async{
+  setState(() {
+    _loading = true;
+  });
+  
+  Service.functionUploadDataStockBuku(
+    headerText, cStockBookId.text, cBookId.text, cStockBookGrDate.text ,cStockBookNoNota.text,
+    cStockBookGrQty.text,
+    idUsersApp).then((value) async {
+    setState(() {
+      _messageUploadStockbuku = value;
+      _loading = false;
+      messageStockBuku = _messageUploadStockbuku[0]!.message.toString();
+      valuesStockBuku = _messageUploadStockbuku[0]!.value.toString();   
+      print("message $messageStockBuku");
+      print(valuesStockBuku);    
+      
+      if (valuesStockBuku == "1") {
+        setState(() {
+
+        });
+      }else{
+        setState(() {
+     
+        });
+      }
+    });
+  });
+ }
+
   _formUpdateAddBook(){
     return GestureDetector(
       onTap: (){
@@ -669,7 +699,7 @@ class _BookState extends State<Book> {
                         surfaceTintColor: Colors.blue,
                         padding: const EdgeInsets.all(10.0),
                         textStyle: const TextStyle(fontSize: 12),
-                        ), child: const Text('Simpan Data',style: TextStyle(color: Colors.white),),
+                        ), child: const Text('Simpan Data Stock',style: TextStyle(color: Colors.white),),
                         onPressed: (){
                           
                         },
@@ -684,6 +714,100 @@ class _BookState extends State<Book> {
       ),
     );
   }
+
+List<PostList?> _listStockBuku = [];
+
+bool formDataStockBook = false;
+String judulStockBuku ="";
+_commandFormDataStockBook(idBuku,judulStockBukus){
+  setState(() {
+    judulStockBuku = judulStockBukus;
+    formDataStockBook = !formDataStockBook;
+    if (formDataStockBook == true) {
+    _getDataStockBuku("","",idBuku,"","",idUsersApp);      
+    }else{
+      _listStockBuku.clear();
+      _getDataBuku("", "", "", "", "");
+    }
+  });
+}
+  _getDataStockBuku(action,idStock,idBuku,tglGr,noNota,idUsersApp) async{
+    setState(() {
+      _loading = true;
+    });
+    Service.getStockDataBuku(action,idStock,idBuku,tglGr,noNota,idUsersApp).then((value) async {
+      setState(() {
+        _listStockBuku = value;
+        _loading = false;
+      });
+    });
+  }
+
+ _dataStockBook(){
+  return Container(
+    color: Colors.black38,
+    child: Center(
+      child: Card(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width* 0.8,
+          height: MediaQuery.of(context).size.height* 0.6,   
+          child: Column(
+            children: [
+              Card(
+                color: Colors.blue,
+                child: Wrap(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Data Penerimaan Buku $judulStockBuku",
+                      style: const TextStyle(fontSize: 18,color: Colors.white)),
+                    ),
+                    IconButton(onPressed: (){
+                      _commandFormDataStockBook("","");
+                    }, icon: const Icon(Icons.close,color: Colors.red,))
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _listStockBuku.length,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context,index){
+                    final listDataStockBuku = _listStockBuku[index]; 
+                    return GestureDetector(
+                      onLongPress: (){
+                      },
+                      child: Card(
+                        color: Colors.blue,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text("Judul : ${listDataStockBuku!.judul}",style: _customFont()),
+                              subtitle: Text("Qty Buku : ${listDataStockBuku.penerbit}",style: _customFont(),),
+                              leading: Image.network(ApiUrl.viewImageBuku+listDataStockBuku.imageBook),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Tanggal Terima : ${listDataStockBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Nomor Nota : ${listDataStockBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                            ),              
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+ }
 
  _dataBook(){
   return ListView.builder(
@@ -771,6 +895,7 @@ class _BookState extends State<Book> {
                     }, icon: const Icon(Icons.add,color: Colors.green))),   
                     Card(child: IconButton(onPressed: (){
                       setState(() {
+                        _commandFormDataStockBook(listDataBuku.idBook,listDataBuku.judul);
                       });
                       
                     }, icon: const Icon(Icons.book_online,color: Colors.green))),                                      
@@ -827,7 +952,10 @@ class _BookState extends State<Book> {
             : Container(),
             tampilAlertMessageResponse == true
             ? _alertMessageResponse()
-            : Container()
+            : Container(),
+            formDataStockBook == true
+            ? _dataStockBook()
+            : Container(),            
           ],
         ),
       ),

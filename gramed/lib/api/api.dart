@@ -22,5 +22,14 @@ class ApiUrl {
   static String deleteDataUser = "$server/$user/delete_user.php";
   static String logins = "logins";
   static String login = "$server/$logins/login.php";
+  static String stockBook = "stock_book";
+  static String tambahStockBukuText = "Tambah Stock Buku";
+  static String editStockBukuText = "Edit Stock Buku";
+  static String deleteStockBukuText = "Hapus Stock Data Buku";
+  static String detailStockBukuText = "Detail Stock Data Buku";
+  static String addDataStockBuku = "$server/$stockBook/add_stock_book.php";
+  static String viewDataStockBuku = "$server/$stockBook/data_stock_book.php";
+  static String editDataStockBuku = "$server/$stockBook/edit_stock_book.php";
+  static String deleteDataStockBuku = "$server/$stockBook/delete_stock_book.php";
   
 }
