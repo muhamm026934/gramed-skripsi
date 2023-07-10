@@ -37,6 +37,8 @@ class PostList {
   late String noTelp;    
   late String token; 
 
+  late String totalQtyGr;
+
   PostList({
     required this.idBuku,
     required this.judul,
@@ -74,6 +76,8 @@ class PostList {
     required this.email, 
     required this.noTelp,    
     required this.token, 
+
+    required this.totalQtyGr, 
     
   });
 
@@ -115,6 +119,8 @@ class PostList {
       email: json['email'] ?? "",     
       noTelp: json['no_telp'] ?? "",  
       token: json['token'] ?? "",   
+
+      totalQtyGr: json['total_qty_gr'] ?? "",   
 
       );
   }

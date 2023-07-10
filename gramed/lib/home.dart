@@ -35,7 +35,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _getPref();
-    _getDataBuku("","","","","");
+    _getDataBukuDiskon("diskon","","","","");
+    _getDataBukuNoDiskon("no_diskon","","","","");
   }
 
   late String value = "";
@@ -66,15 +67,28 @@ class _HomeState extends State<Home> {
     });
   }
   
-  List<PostList?> _listBuku = [];
+  List<PostList?> _listBukuDiskon = [];
+  List<PostList?> _listBukuNoDiskon = [];
   bool _loading = false;
-  _getDataBuku(action,idBuku,judulBuku,penerbit,tahun) async{
+  _getDataBukuDiskon(action,idBuku,judulBuku,penerbit,tahun) async{
     setState(() {
       _loading = true;
     });
     Service.getDataBuku(action,idBuku,judulBuku,penerbit,tahun,idUsersApp).then((value) async {
       setState(() {
-        _listBuku = value;
+        _listBukuDiskon = value;
+        _loading = false;
+      });
+    });
+  }
+
+  _getDataBukuNoDiskon(action,idBuku,judulBuku,penerbit,tahun) async{
+    setState(() {
+      _loading = true;
+    });
+    Service.getDataBuku(action,idBuku,judulBuku,penerbit,tahun,idUsersApp).then((value) async {
+      setState(() {
+        _listBukuNoDiskon = value;
         _loading = false;
       });
     });
@@ -237,7 +251,7 @@ class _HomeState extends State<Home> {
                                   });
                                 }
                             ),
-                            items: _listBuku.map((index) {
+                            items: _listBukuDiskon.map((index) {
                               return Builder(
                                 builder: (BuildContext context) {
                                   return Card(
@@ -248,7 +262,8 @@ class _HomeState extends State<Home> {
                                         decoration: const BoxDecoration(
                                           color: Colors.blue
                                         ),
-                                        child: Column(
+                                        child: 
+                                        Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Expanded(child: Padding(
@@ -257,7 +272,10 @@ class _HomeState extends State<Home> {
                                             )),
                                             Align(
                                               child: Text(index.judul.toString(),textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
-                                            )
+                                            ),
+                                            Align(
+                                              child: Text("Diskon ${index.diskon}% ",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                                            ),
                                           ],
                                         )
                                       ),
@@ -272,7 +290,7 @@ class _HomeState extends State<Home> {
                           flex: 1,
                           child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: _listBuku.asMap().entries.map((entry) {
+                          children: _listBukuDiskon.asMap().entries.map((entry) {
                             return Expanded(
                               child: GestureDetector(
                                 onTap: () => _controller.animateToPage(entry.key),
@@ -306,25 +324,52 @@ class _HomeState extends State<Home> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 150.0,
+                        height: 200.0,
                         child: ListView.builder(
-                          itemCount: _listBuku.length,
+                          itemCount: _listBukuDiskon.length,
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context,index)=> 
-                          Card(
-                            color: Colors.white,
+                          GestureDetector(
+                            onTap: (){
+                                _openFormAdd(
+                                  _listBukuDiskon[index]!.idBook
+                                  ,true,
+                                  _listBukuDiskon[index]!.imageBook,
+                                  _listBukuDiskon[index]!.judul,
+                                  _listBukuDiskon[index]!.description,
+                                  _listBukuDiskon[index]!.price,
+                                  _listBukuDiskon[index]!.diskon,
+                                  _listBukuDiskon[index]!.netPrice,
+                                  _listBukuDiskon[index]!.potonganHarga,
+                                  _listBukuDiskon[index]!.hargaJual,
+                                  );                        
+                            },
                             child: Card(
-                              color: Colors.blue,
-                              child: Container(
-                                width: 150.0,
-                                margin: const EdgeInsets.all(10),
-                                child: Center(
-                                  child: Column(
-                                    children: [
-                                      Expanded(child: Image.network(ApiUrl.viewImageBuku+_listBuku[index]!.imageBook)),
-                                      Text(_listBuku[index]!.judul.toString(),textAlign: TextAlign.center,style:const TextStyle(color: Colors.white,fontSize: 12.0)),
-                                    ],
+                              color: Colors.white,
+                              child: Card(
+                                color: Colors.blue,
+                                child: Container(
+                                  width: 200.0,
+                                  margin: const EdgeInsets.all(10),
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Expanded(child: Image.network(ApiUrl.viewImageBuku+_listBukuDiskon[index]!.imageBook)),
+                                        Text(_listBukuDiskon[index]!.judul.toString(),textAlign: TextAlign.center,style:const TextStyle(color: Colors.white,fontSize: 12.0)),
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom:8.0),
+                                          child: Text("Harga : Rp. ${_listBukuDiskon[index]!.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                                        ), 
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom:8.0),
+                                          child: 
+                                          _listBukuDiskon[index]!.price != _listBukuDiskon[index]!.netPrice
+                                          ? Text("Harga Setelah Diskon ${_listBukuDiskon[index]!.diskon}% : Rp. ${_listBukuDiskon[index]!.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
+                                          : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
+                                        ), 
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -347,33 +392,48 @@ class _HomeState extends State<Home> {
                         GestureDetector(
                           onTap: (){
                             _openFormAdd(
-                              _listBuku[index]!.idBook
+                              _listBukuNoDiskon[index]!.idBook
                               ,true,
-                              _listBuku[index]!.imageBook,
-                              _listBuku[index]!.judul,
-                              _listBuku[index]!.description,
-                              _listBuku[index]!.price,
-                              _listBuku[index]!.diskon,
-                              _listBuku[index]!.netPrice,
-                              _listBuku[index]!.potonganHarga,
-                              _listBuku[index]!.hargaJual,
+                              _listBukuNoDiskon[index]!.imageBook,
+                              _listBukuNoDiskon[index]!.judul,
+                              _listBukuNoDiskon[index]!.description,
+                              _listBukuNoDiskon[index]!.price,
+                              _listBukuNoDiskon[index]!.diskon,
+                              _listBukuNoDiskon[index]!.netPrice,
+                              _listBukuNoDiskon[index]!.potonganHarga,
+                              _listBukuNoDiskon[index]!.hargaJual,
                               );
                           },
-                          child: ListTile(
-                            leading: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.network(ApiUrl.viewImageBuku+_listBuku[index]!.imageBook),
-                            ),
-                            title: Text(_listBuku[index]!.judul.toString(),
-                              style: const TextStyle(
-                                  color: Colors.white),
-                            ),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.network(ApiUrl.viewImageBuku+_listBukuNoDiskon[index]!.imageBook),
+                                ),
+                                title: Text(_listBukuNoDiskon[index]!.judul.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom:8.0),
+                                child: Text("Harga : Rp. ${_listBukuNoDiskon[index]!.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ), 
+                              Padding(
+                                padding: const EdgeInsets.only(bottom:8.0),
+                                child: 
+                                _listBukuNoDiskon[index]!.price != _listBukuNoDiskon[index]!.netPrice
+                                ? Text("Harga Setelah Diskon ${_listBukuNoDiskon[index]!.diskon}% : Rp. ${_listBukuNoDiskon[index]!.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
+                                : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
+                              ),                               
+                            ],
                           ),
                         ),
                       ), //Text
                     ),
                   ), 
-                  childCount: _listBuku.length,
+                  childCount: _listBukuNoDiskon.length,
                 ),
               )
             ],

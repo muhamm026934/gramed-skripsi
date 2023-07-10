@@ -557,13 +557,15 @@ class _BookState extends State<Book> {
 
   bool cFormUpdateAddBook = false;
   String textFormUpdateAddBook = "" , idStockBook = "", idBook = "";
- _commandFormUpdateAddBook(idStockBooks,idBooks,cFormUpdateAddBooks,textFormUpdateAddBooks){
+ _commandFormUpdateAddBook(idStockBooks,idBooks,cFormUpdateAddBooks,textFormUpdateAddBooks,headerStockTexts){
   setState(() {
+    headerStockText = headerStockTexts;
     idBook = idBooks;
-    cFormUpdateAddBook = cFormUpdateAddBooks;
-    cFormUpdateAddBook = !cFormUpdateAddBook;
+    cFormUpdateAddBook = !cFormUpdateAddBooks;
     textFormUpdateAddBook = textFormUpdateAddBooks;
     idStockBook = idStockBooks;
+    cStockBookId.text = idStockBooks;
+    cBookId.text = idBooks;
     print("object");
     print(idStockBook);
     print(idBook);
@@ -574,14 +576,24 @@ class _BookState extends State<Book> {
 
  String messageStockBuku = "", valuesStockBuku = "";
  List<PostList?> _messageUploadStockbuku = [];
+ String headerStockText = "";
 
+_clearStock(){
+  setState(() {
+    cStockBookGrQty.text = "";
+    cStockBookId.text = "";
+    cBookId.text = "";
+    cStockBookGrDate.text = "";
+    cStockBookNoNota.text = "";
+  });
+}
  _functionUploadDataStockBuku() async{
   setState(() {
     _loading = true;
   });
   
   Service.functionUploadDataStockBuku(
-    headerText, cStockBookId.text, cBookId.text, cStockBookGrDate.text ,cStockBookNoNota.text,
+    headerStockText, cStockBookId.text, cBookId.text, cStockBookGrDate.text ,cStockBookNoNota.text,
     cStockBookGrQty.text,
     idUsersApp).then((value) async {
     setState(() {
@@ -594,16 +606,153 @@ class _BookState extends State<Book> {
       
       if (valuesStockBuku == "1") {
         setState(() {
-
+          _commandAlertMessageResponseStock(valuesStockBuku, messageStockBuku, true);
+           _commandFormUpdateAddBook("","",true,"","");
+           _commandAlertMessageStock(headerStockText, "", true);
+           _getDataStockBuku("", "", cBookId.text, "", "", idUsersApp);
+           _clearStock();
+           print("object tst $valuesStockBuku");
         });
       }else{
         setState(() {
-     
+          _commandAlertMessageResponseStock(valuesStockBuku, messageStockBuku, true);
         });
       }
     });
   });
  }
+
+  String valueResponseStock = "";
+  String messageResponseStock = "";
+  bool tampilAlertMessageResponseStock = false;
+  _commandAlertMessageResponseStock(valueResponseStocks, messageResponseStocks, tampilAlertMessageResponseStocks){
+    setState(() {
+      valueResponseStock = valueResponseStocks;
+      messageResponseStock = messageResponseStocks;
+      tampilAlertMessageResponseStock = tampilAlertMessageResponseStocks;
+    });
+  }
+
+  _alertMessageResponseStock(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: valueResponseStock == "1" ? Colors.green: Colors.red,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(messageResponseStock, style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(titleText, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Card(
+                  color: Colors.orangeAccent,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    surfaceTintColor: Colors.blue,
+                    padding: const EdgeInsets.all(10.0),
+                    textStyle: const TextStyle(fontSize: 12),
+                    ), child: const Text('Keluar',style: TextStyle(color: Colors.white),),
+                    onPressed: (){
+                      _commandAlertMessageResponseStock("", "", false);
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+bool cAlertMessageStock = false;
+String headerStockTextAlert = "",headerAddUpdateStockText = "";
+_commandAlertMessageStock(headerAddUpdateStockTexts,headerStockTextAlerts,cAlertMessageStocks){
+  setState(() {
+    cAlertMessageStock = !cAlertMessageStocks;
+    headerStockTextAlert = headerStockTextAlerts;
+    headerAddUpdateStockText = headerAddUpdateStockTexts;
+    print(cAlertMessageStock);
+  });
+}
+  _alertMessageStock(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: 
+            headerStockText == ApiUrl.tambahStockBukuText || headerText == ApiUrl.tambahStockBukuText 
+            ? Colors.green
+            :headerStockText == ApiUrl.editStockBukuText || headerText == ApiUrl.editStockBukuText 
+            ? Colors.orange
+            :headerStockText == ApiUrl.deleteStockBukuText || headerText == ApiUrl.deleteStockBukuText
+            ? Colors.red
+            : Colors.blue,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(headerAddUpdateStockText, style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(headerStockTextAlert, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Card(
+                      color: Colors.blue,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('OK',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          _functionUploadDataStockBuku();
+                        },
+                      ),
+                    ),   
+                    Card(
+                      color: Colors.orangeAccent,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('Batal',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          _commandAlertMessageStock(headerStockText, "", true);
+                        },
+                      ),
+                    ),                              
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   _formUpdateAddBook(){
     return GestureDetector(
@@ -612,6 +761,7 @@ class _BookState extends State<Book> {
             "",
             "",
             true,
+            "",
             "");
       },
       child: Container(
@@ -636,6 +786,7 @@ class _BookState extends State<Book> {
                                   "",
                                   "",
                                   true,
+                                  "",
                                   "");
                           }, icon: const Icon(Icons.close,size: 20.0,)),
                       ],
@@ -687,7 +838,7 @@ class _BookState extends State<Book> {
                         ), 
                       ),
                     ),
-                  ),   
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Card(
@@ -701,7 +852,10 @@ class _BookState extends State<Book> {
                         textStyle: const TextStyle(fontSize: 12),
                         ), child: const Text('Simpan Data Stock',style: TextStyle(color: Colors.white),),
                         onPressed: (){
-                          
+                          _commandAlertMessageStock(
+                            textFormUpdateAddBook,
+                            "Qty ${cStockBookGrQty.text} Tanggal Terima ${cStockBookGrDate.text} No Nota ${cStockBookNoNota.text} "
+                            ,false);
                         },
                       ),
                     ),
@@ -743,6 +897,40 @@ _commandFormDataStockBook(idBuku,judulStockBukus){
     });
   }
 
+
+_editStock(stockBookId,bookId,grQty,grDate,noNota,judul){
+  setState(() {
+    cStockBookId.text = stockBookId;
+    cBookId.text = bookId;
+    cStockBookGrQty.text = grQty;
+    cStockBookGrDate.text = grDate;
+    cStockBookNoNota.text = noNota;
+    headerStockText = ApiUrl.editStockBukuText;
+    _commandFormUpdateAddBook(
+        stockBookId,
+        bookId,
+        false,
+        "Ubah Data Buku $judul",
+        ApiUrl.editStockBukuText,
+        );
+  });
+}
+
+_deleteStock(stockBookId,bookId,grQty,grDate,noNota,judul){
+  setState(() {
+    cStockBookId.text = stockBookId;
+    cBookId.text = bookId;
+    cStockBookGrQty.text = grQty;
+    cStockBookGrDate.text = grDate;
+    cStockBookNoNota.text = noNota;
+    headerStockText = ApiUrl.deleteStockBukuText;
+    _commandAlertMessageStock(
+    "Hapus Data Stock Buku",
+    "Qty ${cStockBookGrQty.text} Tanggal Terima ${cStockBookGrDate.text} No Nota ${cStockBookNoNota.text} "
+    ,false);
+  });
+}
+
  _dataStockBook(){
   return Container(
     color: Colors.black38,
@@ -783,17 +971,43 @@ _commandFormDataStockBook(idBuku,judulStockBukus){
                           children: [
                             ListTile(
                               title: Text("Judul : ${listDataStockBuku!.judul}",style: _customFont()),
-                              subtitle: Text("Qty Buku : ${listDataStockBuku.penerbit}",style: _customFont(),),
+                              subtitle: Text("Qty Buku : ${listDataStockBuku.qtyGr}",style: _customFont(),),
                               leading: Image.network(ApiUrl.viewImageBuku+listDataStockBuku.imageBook),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Tanggal Terima : ${listDataStockBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              child: Text("Tanggal Terima : ${listDataStockBuku.dateGr}",style: const TextStyle(fontSize: 10,color: Colors.white),),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Nomor Nota : ${listDataStockBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
-                            ),              
+                              child: Text("Nomor Nota : ${listDataStockBuku.noNote}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                            ),      
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Card(child: IconButton(onPressed: (){
+                                  headerStockText = ApiUrl.deleteStockBukuText;
+                                    _deleteStock(
+                                      listDataStockBuku.idStock,
+                                      listDataStockBuku.idBook,
+                                      listDataStockBuku.qtyGr,
+                                      listDataStockBuku.dateGr,
+                                      listDataStockBuku.noNote,
+                                      listDataStockBuku.judul);
+                                  
+                                }, icon: const Icon(Icons.delete,color: Colors.red))),       
+                                Card(child: IconButton(onPressed: (){
+                                    _editStock(
+                                      listDataStockBuku.idStock,
+                                      listDataStockBuku.idBook,
+                                      listDataStockBuku.qtyGr,
+                                      listDataStockBuku.dateGr,
+                                      listDataStockBuku.noNote,
+                                      listDataStockBuku.judul);
+                                  
+                                }, icon: const Icon(Icons.edit,color: Colors.orange))),                                                              
+                              ],
+                            )        
                           ],
                         ),
                       ),
@@ -890,7 +1104,9 @@ _commandFormDataStockBook(idBuku,judulStockBukus){
                           listDataBuku.idStock,
                           listDataBuku.idBuku,
                           false,
-                          "Tambah Stock Buku ${listDataBuku.judul}");
+                          "Tambah Stock Buku ${listDataBuku.judul}",
+                          ApiUrl.tambahStockBukuText
+                          );
                       
                     }, icon: const Icon(Icons.add,color: Colors.green))),   
                     Card(child: IconButton(onPressed: (){
@@ -941,9 +1157,6 @@ _commandFormDataStockBook(idBuku,judulStockBukus){
                 ),
               ),
             ),
-            cFormUpdateAddBook == true
-            ? _formUpdateAddBook()
-            : Container(),
             tampilFormUpdateAdd == true
             ? _formUpdateAdd()
             :Container(),
@@ -955,7 +1168,16 @@ _commandFormDataStockBook(idBuku,judulStockBukus){
             : Container(),
             formDataStockBook == true
             ? _dataStockBook()
+            : Container(),  
+            cFormUpdateAddBook == true
+            ? _formUpdateAddBook()
             : Container(),            
+            cAlertMessageStock == true     
+            ? _alertMessageStock()
+            :Container(),
+            tampilAlertMessageResponseStock == true  
+            ?_alertMessageResponseStock()
+            :Container()
           ],
         ),
       ),
