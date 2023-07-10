@@ -41,11 +41,16 @@ class PageRoutes {
       }));
     });
   }     
-  static routeToWebViewPay(context) async {
+  static routeToWebViewPay(context,juduls,codeBayars,namaUsers,qtys,totalBayars) async {
     var duration = const Duration(milliseconds: 10);
     return Timer(duration, (){
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_){
-        return  const WebViewExample();
+        return  WebViewExample(
+          session: juduls, 
+          codeBayar: codeBayars, 
+          namaUser: namaUsers, 
+          qty: qtys, 
+          totalBayar: totalBayars);
       }));
     });
   }    

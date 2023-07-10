@@ -20,11 +20,15 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 // #enddocregion platform_imports
 
-void main() => runApp(const MaterialApp(home: WebViewExample()));
-
-
 class WebViewExample extends StatefulWidget {
-  const WebViewExample({super.key});
+  final String session, qty;
+  final String totalBayar, namaUser, codeBayar;
+  const WebViewExample({Key? key, 
+  required this.session, 
+  required this.qty, 
+  required this.totalBayar, 
+  required this.namaUser, 
+  required this.codeBayar}) : super(key: key);
 
   @override
   State<WebViewExample> createState() => _WebViewExampleState();
@@ -33,8 +37,6 @@ class WebViewExample extends StatefulWidget {
 class _WebViewExampleState extends State<WebViewExample> {
   late final WebViewController _controller;
   
-  get session => null;
-
   @override
   void initState() {
     super.initState();
@@ -70,15 +72,16 @@ class _WebViewExampleState extends State<WebViewExample> {
           },
           onWebResourceError: (WebResourceError error) {
             debugPrint('''
-  Page resource error:
-  code: ${error.errorCode}
-  description: ${error.description}
-  errorType: ${error.errorType}
-  isForMainFrame: ${error.isForMainFrame}
+          Page resource error:
+          code: ${error.errorCode}
+          description: ${error.description}
+          errorType: ${error.errorType}
+          isForMainFrame: ${error.isForMainFrame}
           ''');
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('http://192.168.1.3:8080/gramed/midtrans/examples/snap-redirect/checkout-process.php')) {
+            if (request.url.
+            startsWith('http://192.168.1.3:8080/gramed/midtrans/examples/snap-redirect/checkout-process.php?judul=${widget.session}&qty=${widget.qty}&jml_bayar=${widget.totalBayar}&code_byr=${widget.codeBayar}&nama=${widget.namaUser}')) {
               debugPrint('blocking navigation to ${request.url}');
               return NavigationDecision.prevent;
             }

@@ -100,10 +100,10 @@ class _HomeState extends State<Home> {
  String hargaJuals = "0";
  late int jmlBayar = qtyBeli * int.parse(hargaJuals);
  var jmlBayars = "";
-  _openFormAdd(tag,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual){
+  _openFormAdd(idBookss,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual){
     setState(() {
       _openFormAdds = openFormAdds;
-      tags = tag;
+      idBooks = idBookss;
       images = image;
       juduls = judul;
       deskripsis = deskripsi;
@@ -134,12 +134,134 @@ class _HomeState extends State<Home> {
       }
     });
   }
+
+  TextEditingController cAlamat = TextEditingController();
+  bool cFormAlertBuy = false;
+  String idBooks = "",
+  qtyPicks = "",
+  codeTransactions = "",
+  totalPayments = "",
+  stateTransactions = "",
+  idUsers = "";
+  
+
+  _cFormAlertBuy(
+    cFormAlertBuyss,
+    idBookss,
+    qtyPickss,
+    codeTransactionss,
+    totalPaymentss,
+    stateTransactionss,
+    idUserss
+    ){
+    setState(() {
+      cFormAlertBuy = cFormAlertBuyss;
+      idBooks = idBookss.toString();
+      qtyPicks = qtyPickss.toString();
+      codeTransactions = "$idBooks-$idUsersApp";
+      totalPayments = totalPaymentss.toString();
+      stateTransactions = stateTransactionss.toString();
+      idUsers = idUsersApp.toString(); 
+      print(cFormAlertBuy);
+    });
+  }
+
+  _clearFormAlertBuy(){
+    setState(() {
+    idBooks = "";
+    qtyPicks = "";
+    codeTransactions = "";
+    totalPayments = "";
+    stateTransactions = "";
+    idUsers = "";
+    });    
+  }
+
+  _formAlertBuy(){
+    return GestureDetector(
+      onTap: (){
+      _cFormAlertBuy(
+        false,
+        idBooks,
+        qtyBeli,
+        idBooks,
+        jmlBayar,
+        "",
+        idUsersApp
+        );        
+      },
+      child: Container(
+        color: Colors.black45,
+        child: Center(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height* 0.6,  
+            width: MediaQuery.of(context).size.width* 0.9,          
+            child: Card(
+              child: ListView(
+                children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Judul : $juduls"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Qty : $qtyBeli"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Total Pembayaran : ${CurrencyFormat.convertToIdr(jmlBayar, 2)}",),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Kode Transaksi : $codeTransactions"),
+                    ),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: TextField(
+                          enabled: true,
+                          maxLines: 3,
+                          controller: cAlamat,
+                          decoration: const InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue)
+                            ),
+                            label: Text("Alamat Tujuan",style: TextStyle(fontSize: 10,color: Colors.blue),),
+                          ), 
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(child: OutlinedButton.icon(onPressed: (){
+                        PageRoutes.routeToWebViewPay(
+                          context,
+                          juduls.toString(),
+                          codeTransactions.toString(), 
+                          name.toString(), 
+                          qtyBeli.toString(), 
+                          jmlBayar.toString(),);
+                      }, icon: const Icon(Icons.monetization_on), label: const Text("Pembayaran"))),
+                    ),                   
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang"))),
+                    )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   _formAdd(){
     return Container(
       color: Colors.black38,
       child: GestureDetector(
         onTap: (){
-          _openFormAdd(tags,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals);
+          _openFormAdd(idBooks,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals);
         },
         child: Center(
           child: Container(
@@ -175,8 +297,17 @@ class _HomeState extends State<Home> {
                         ),           
                         Text(CurrencyFormat.convertToIdr(jmlBayar, 2),textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),           
                         Card(child: OutlinedButton.icon(onPressed: (){
-                          PageRoutes.routeToWebViewPay(context);
-                        }, icon: const Icon(Icons.monetization_on), label: const Text("Pembayaran"))),                   
+                          _cFormAlertBuy(
+                            true,
+                            idBooks,
+                            qtyBeli,
+                            idBooks,
+                            jmlBayar,
+                            "",
+                            idUsersApp
+                            );
+                          // PageRoutes.routeToWebViewPay(context);
+                        }, icon: const Icon(Icons.sell), label: const Text("Beli"))),                   
                         Card(child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang")))
                       ],
                     ),
@@ -333,7 +464,7 @@ class _HomeState extends State<Home> {
                           GestureDetector(
                             onTap: (){
                                 _openFormAdd(
-                                  _listBukuDiskon[index]!.idBook
+                                  _listBukuDiskon[index]!.idBuku
                                   ,true,
                                   _listBukuDiskon[index]!.imageBook,
                                   _listBukuDiskon[index]!.judul,
@@ -392,7 +523,7 @@ class _HomeState extends State<Home> {
                         GestureDetector(
                           onTap: (){
                             _openFormAdd(
-                              _listBukuNoDiskon[index]!.idBook
+                              _listBukuNoDiskon[index]!.idBuku
                               ,true,
                               _listBukuNoDiskon[index]!.imageBook,
                               _listBukuNoDiskon[index]!.judul,
@@ -440,6 +571,9 @@ class _HomeState extends State<Home> {
           ),
           _openFormAdds == true
           ?_formAdd()
+          :Container(),
+           cFormAlertBuy == true
+          ? _formAlertBuy()
           :Container(),
         ],
       ),

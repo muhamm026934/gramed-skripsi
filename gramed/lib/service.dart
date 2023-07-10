@@ -135,6 +135,35 @@ class Service {
     return list;
   }   
   
+  static Future <List<PostList>> functionUploadDataTransaksi(
+    action, idTransaksi ,qtyPick, idBook ,codeTransaction,stateTransaction,totalPayment,
+    idUsersApp) async{
+    String tglInput = DateTime.now().toString();
+    var map = 
+    FormData.fromMap({
+        'ACTION': action,
+        'id_transaction': idTransaksi.toString(),
+        'qty_pick': qtyPick.toString(),
+        'id_book': idBook.toString(),
+        'code_transaction': codeTransaction.toString(),
+        'total_payment': totalPayment.toString(),
+        'state_transaction': stateTransaction,        
+        'id_user': idUsersApp.toString(),        
+      });
+    var dio = Dio();
+    final response = 
+    action == ApiUrl.tambahStockBukuText
+    ? await dio.post(ApiUrl.addDataStockBuku, data: map)
+    : action == ApiUrl.deleteStockBukuText
+    ? await dio.post(ApiUrl.deleteDataStockBuku, data: map)
+    : action == ApiUrl.editStockBukuText
+    ? await dio.post(ApiUrl.editDataStockBuku, data: map)
+    : await dio.post(ApiUrl.stockBook, data: map);
+    print(action);    
+    print(response.statusCode); 
+    List<PostList> list  = parseResponse(response.data);
+    return list;
+  } 
 
   static Future<List<PostList>> getStockDataBuku(action,idStock,idBuku,tglGr,noNota,idUsersApp) async{
     var map = FormData.fromMap({
