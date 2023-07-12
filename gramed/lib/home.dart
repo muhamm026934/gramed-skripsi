@@ -99,10 +99,10 @@ class _HomeState extends State<Home> {
  bool _openFormAdds = false;
  String tags = "",images ="",juduls ="",deskripsis = "",hargas ="",diskons ="",netHargas ="",potonganHargas = "";
  int qtyBeli = 1;
- String hargaJuals = "0";
+ String hargaJuals = "0", openFormText = "";
  late int jmlBayar = qtyBeli * int.parse(hargaJuals);
  var jmlBayars = "";
-  _openFormAdd(idBookss,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual){
+  _openFormAdd(idBookss,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual,openFormTexts){
     setState(() {
       _openFormAdds = openFormAdds;
       idBooks = idBookss;
@@ -114,8 +114,26 @@ class _HomeState extends State<Home> {
       netHargas = netHarga;
       potonganHargas = potonganHarga;
       hargaJuals = hargaJual;
-      qtyBeli = 1;
+      qtyBeli = 1;     
       jmlBayar = qtyBeli * int.parse(hargaJuals);
+      openFormText = openFormTexts;
+    });
+  }
+  _openFormEdit(idBookss,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual,openFormTexts){
+    setState(() {
+      _openFormAdds = openFormAdds;
+      idBooks = idBookss;
+      images = image;
+      juduls = judul;
+      deskripsis = deskripsi;
+      hargas = harga;
+      diskons = diskon;
+      netHargas = netHarga;
+      potonganHargas = potonganHarga;
+      hargaJuals = hargaJual;
+      qtyBeli = qtyBeli;     
+      jmlBayar = qtyBeli * int.parse(hargaJuals);
+      openFormText = openFormTexts;
     });
   }
 
@@ -239,13 +257,67 @@ class _HomeState extends State<Home> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(child: OutlinedButton.icon(onPressed: (){
-                        _commandAlertMessage(ApiUrl.tambahTransBukuText, juduls, true,ApiUrl.tambahBayarText);
+                        _commandAlertMessage(openFormText, juduls, true,ApiUrl.tambahBayarText);
 
                       }, icon: const Icon(Icons.monetization_on), label: const Text("Pembayaran"))),
                     ),                  
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String valueResponse = "";
+  String messageResponse = "";
+
+  bool tampilAlertMessageResponse = false;
+  _commandAlertMessageResponse(valueResponses, messageResponses, tampilAlertMessageResponses){
+    setState(() {
+      valueResponse = valueResponses;
+      messageResponse = messageResponses;
+      tampilAlertMessageResponse = tampilAlertMessageResponses;
+    });
+  }
+
+  _alertMessageResponse(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: valueResponse == "1" ? Colors.green: Colors.red,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(messageResponse, style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(titleText, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Card(
+                  color: Colors.orangeAccent,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    surfaceTintColor: Colors.blue,
+                    padding: const EdgeInsets.all(10.0),
+                    textStyle: const TextStyle(fontSize: 12),
+                    ), child: const Text('Keluar',style: TextStyle(color: Colors.white),),
+                    onPressed: (){
+                      _commandAlertMessageResponse("", "", false);
+                    },
+                  ),
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -281,9 +353,7 @@ class _HomeState extends State<Home> {
       
       if (values == "1") {
         setState(() {
-          _messageUpload.clear();
-          message ="";
-          values ="";
+          _commandAlertMessageResponse(values, message, true);
 
           if (funtionAlert == ApiUrl.tambahBayarText) {
             PageRoutes.routeToWebViewPay(
@@ -294,126 +364,18 @@ class _HomeState extends State<Home> {
               qtyBeli.toString(), 
               hargaJuals.toString(),);            
           }
+          _getDataTrans();
+          _commandAlertMessage("", "", false,"");
         });
       }else{
         setState(() {
-       
+        _commandAlertMessageResponse(values, message, true);
         });
       }
     });
   });
 
-  List<PostList?> _listKeranjang = [];
-  String actions = "";
-  _getDataTrans() async{
-    setState(() {
-      _loading = true;
-    });
-    Service.getStockTransBuku(
-      actions, idTransaksi ,qtyBeli, idBooks ,codeTransactions,stateTransaction,totalPayments,
-    idUsersApp,cAlamat.text,level).then((value) async {
-      setState(() {
-        _listKeranjang = value;
-        _loading = false;
-      });
-    });
-  }
 
-bool formDataKeranjang = false;
-String judulTrans ="";
-_commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
-  setState(() {
-    judulTrans = judulTranss;
-    formDataKeranjang = formDataKeranjangs;
-    if (formDataKeranjang == true) {
-     _getDataTrans();
-     
-    }else{
-      _listKeranjang.clear();
-    }
-  });
-}
-
-  _dataTransBook(){
-    return Container(
-      color: Colors.black38,
-      child: Center(
-        child: Card(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width* 0.8,
-            height: MediaQuery.of(context).size.height* 0.6,   
-            child: Column(
-              children: [
-                Card(
-                  color: Colors.blue,
-                  child: Wrap(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("List Keranjang $judulTrans",
-                        style: const TextStyle(fontSize: 18,color: Colors.white)),
-                      ),
-                      IconButton(onPressed: (){
-                        _commandformDataKeranjang("","",false);
-                      }, icon: const Icon(Icons.close,color: Colors.red,))
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _listKeranjang.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context,index){
-                      final listDataStockBuku = _listKeranjang[index]; 
-                      return GestureDetector(
-                        onLongPress: (){
-                        },
-                        child: Card(
-                          color: Colors.blue,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text("Judul : ${listDataStockBuku!.judul}",style: _customFont()),
-                                subtitle: Text("Qty Buku : ${listDataStockBuku.qtyPick}",style: _customFont(),),
-                                leading: Image.network(ApiUrl.viewImageBuku+listDataStockBuku.imageBook),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Total Bayar: ${listDataStockBuku.totalPayment}",style: const TextStyle(fontSize: 10,color: Colors.white),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Alamat : ${listDataStockBuku.alamat}",style: const TextStyle(fontSize: 10,color: Colors.white),),
-                              ),    
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Status Transaksi : ${listDataStockBuku.stateTransaction}",style: const TextStyle(fontSize: 10,color: Colors.white),),
-                              ),   
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Card(child: IconButton(onPressed: (){
-                                    
-                                  }, icon: const Icon(Icons.delete,color: Colors.red))),       
-                                  Card(child: IconButton(onPressed: (){
-
-                                  }, icon: const Icon(Icons.edit,color: Colors.orange))),                                                              
-                                ],
-                              )        
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   }
   TextStyle _customFont() {
@@ -453,7 +415,11 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
               Padding(
                 padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
                 child: Center(child: Text(
-                  funtionAlert == ApiUrl.tambahBayarText ? "Pembayaran Buku":"Masukkan Ke Keranjang"
+                  headerText == ApiUrl.deleteTransBukuText
+                  ? "Hapus Data Transaksi Buku "
+                  :funtionAlert == ApiUrl.tambahBayarText ? 
+                  "Pembayaran Buku":
+                  "Masukkan Ke Keranjang"
                   , style:_customFont(),textAlign: TextAlign.center,)),
               ),
               Padding(
@@ -510,7 +476,7 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
       color: Colors.black38,
       child: GestureDetector(
         onTap: (){
-          _openFormAdd(idBooks,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals);
+          _openFormAdd(idBooks,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals,ApiUrl.tambahTransBukuText);
         },
         child: Center(
           child: Container(
@@ -557,8 +523,8 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
                             );
                         }, icon: const Icon(Icons.sell), label: const Text("Beli"))),                   
                         Card(child: OutlinedButton.icon(onPressed: (){
-                          _commandAlertMessage(ApiUrl.tambahTransBukuText, juduls, true,ApiUrl.tambahKeranjangText);
-                        }, icon: const Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang")))
+                          _commandAlertMessage(openFormText, juduls, true,ApiUrl.tambahKeranjangText);
+                        }, icon: const Icon(Icons.add_shopping_cart_outlined), label: const Text("Keranjang")))
                       ],
                     ),
                   )
@@ -569,6 +535,141 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
     );
   }
 
+  List<PostList?> _listKeranjang = [];
+  String actions = "";
+  _getDataTrans() async{
+    setState(() {
+      _loading = true;
+    });
+    Service.getStockTransBuku(
+      actions, idTransaksi ,qtyBeli, idBooks ,codeTransactions,stateTransaction,totalPayments,
+    idUsersApp,cAlamat.text,level).then((value) async {
+      setState(() {
+        _listKeranjang = value;
+        _loading = false;
+      });
+    });
+  }
+
+  bool formDataKeranjang = false;
+  String judulTrans ="";
+  _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
+    setState(() {
+      judulTrans = judulTranss;
+      formDataKeranjang = formDataKeranjangs;
+      if (formDataKeranjang == true) {
+      _getDataTrans();
+      
+      }else{
+        _listKeranjang.clear();
+      }
+    });
+  }
+
+  _dataTransBook(){
+    return Center(
+      child: Container(
+        color: Colors.black38,
+        child: Card(
+          color: Colors.blue,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width* 0.99,
+            height: MediaQuery.of(context).size.height* 0.9,   
+            child: Column(
+              children: [
+                Card(
+                  color: Colors.blue,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("List Keranjang $judulTrans",
+                        style: const TextStyle(fontSize: 18,color: Colors.white)),
+                      ),
+                      IconButton(onPressed: (){
+                        _commandformDataKeranjang("","",false);
+                      }, icon: const Icon(Icons.close,color: Colors.red,))
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _listKeranjang.length,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context,index){
+                      final listDataTrans = _listKeranjang[index]; 
+                      return GestureDetector(
+                        onLongPress: (){
+                        },
+                        child: Card(
+                          color: Colors.blue,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: Text("Judul : ${listDataTrans!.judul}",style: _customFont()),
+                                subtitle: Text("Qty Buku : ${listDataTrans.qtyPick}",style: _customFont(),),
+                                leading: Image.network(ApiUrl.viewImageBuku+listDataTrans.imageBook),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Total Bayar: ${listDataTrans.totalPayment}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Alamat : ${listDataTrans.alamat}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ),    
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Status Transaksi : ${listDataTrans.stateTransaction}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ),   
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Card(child: IconButton(onPressed: (){
+                                    setState(() {
+                                      idTransaksi = listDataTrans.idTransaction;
+                                      openFormText = ApiUrl.deleteTransBukuText;
+                                    });                                    
+                                    _commandAlertMessage(openFormText, listDataTrans.judul, true,ApiUrl.tambahKeranjangText);
+
+                                  }, icon: const Icon(Icons.delete,color: Colors.red))),       
+                                  Card(child: IconButton(onPressed: (){
+                                    setState(() {
+                                      idTransaksi = listDataTrans.idTransaction;
+                                      qtyBeli = int.parse(listDataTrans.qtyPick);
+                                    });
+                                      _openFormEdit(
+                                      listDataTrans.idBook
+                                      ,true,
+                                      listDataTrans.imageBook,
+                                      listDataTrans.judul,
+                                      listDataTrans.description,
+                                      listDataTrans.price,
+                                      listDataTrans.diskon,
+                                      listDataTrans.netPrice,
+                                      listDataTrans.potonganHarga,
+                                      listDataTrans.hargaJual,
+                                      ApiUrl.editTransBuku
+                                      );                                    
+                                  }, icon: const Icon(Icons.edit,color: Colors.orange))),                                                              
+                                ],
+                              )        
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -581,22 +682,33 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
                 toolbarHeight: 80.0,
                 backgroundColor: Colors.blue,
                 shadowColor: Colors.blue,
-                title: const Card(
+                title: Card(
                   color: Colors.blue,
                   child: Padding(
                     padding: EdgeInsets.all(1.0),
-                    child: TextField(
-                      cursorColor: Colors.white,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)
+                    child: Row(
+                      children: [
+                        const Expanded( 
+                          child: TextField(
+                            cursorColor: Colors.white,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white)
+                              ),
+                              label: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text("Pencarian Judul Buku",style: TextStyle(fontSize: 10,color: Colors.white),),
+                              ),
+                            ),                
+                          ),
                         ),
-                        label: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text("Pencarian Judul Buku",style: TextStyle(fontSize: 10,color: Colors.white),),
-                        ),
-                      ),                
+                        IconButton(onPressed: (){
+                          setState(() {
+                            _commandformDataKeranjang("","",true);
+                          });
+                        }, icon: const Icon(Icons.add_shopping_cart)),
+                      ],
                     ),
                   ),
                 ),
@@ -724,6 +836,7 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
                                   _listBukuDiskon[index]!.netPrice,
                                   _listBukuDiskon[index]!.potonganHarga,
                                   _listBukuDiskon[index]!.hargaJual,
+                                  ApiUrl.tambahTransBukuText
                                   );                        
                             },
                             child: Card(
@@ -783,6 +896,7 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
                               _listBukuNoDiskon[index]!.netPrice,
                               _listBukuNoDiskon[index]!.potonganHarga,
                               _listBukuNoDiskon[index]!.hargaJual,
+                              ApiUrl.tambahTransBukuText
                               );
                           },
                           child: Column(
@@ -828,6 +942,21 @@ _commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
           tampilAlertMessage == true
           ? _alertMessage()
           : Container(),   
+          formDataKeranjang == true
+          ? _dataTransBook()
+          : Container(),       
+          _openFormAdds == true
+          ?_formAdd()
+          :Container(),     
+           cFormAlertBuy == true
+          ? _formAlertBuy()
+          :Container(),
+          tampilAlertMessage == true
+          ? _alertMessage()
+          : Container(),  
+          tampilAlertMessageResponse == true
+          ? _alertMessageResponse()  
+          : Container(),                      
         ],
       ),
     );

@@ -178,15 +178,15 @@ class Service {
     action == ApiUrl.tambahTransBukuText
     ? await dio.post(ApiUrl.addTransBuku, data: map)
     : action == ApiUrl.deleteTransBukuText
-    ? await dio.post(ApiUrl.deleteDataStockBuku, data: map)
-    : action == ApiUrl.deleteTransBuku
+    ? await dio.post(ApiUrl.deleteTransBuku, data: map)
+    : action == ApiUrl.editTransBuku
     ? await dio.post(ApiUrl.editTransBuku, data: map)
     : await dio.post(ApiUrl.transaksiBuku, data: map);
     print(action);    
     print(response.statusCode); 
     List<PostList> list  = parseResponse(response.data);
     return list;
-  } 
+  }
 
   static Future<List<PostList>> getStockDataBuku(action,idStock,idBuku,tglGr,noNota,idUsersApp) async{
     var map = FormData.fromMap({
