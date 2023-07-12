@@ -134,10 +134,31 @@ class Service {
     List<PostList> list  = parseResponse(response.data);
     return list;
   }   
-  
+
+  static Future<List<PostList>> getStockTransBuku(action, idTransaksi ,qtyPick, idBook ,codeTransaction,stateTransaction,totalPayment,
+    idUsersApp,alamat,level) async{
+    var map = FormData.fromMap({
+        'ACTION': action,
+        'id_transaction': idTransaksi.toString(),
+        'qty_pick': qtyPick.toString(),
+        'id_book': idBook.toString(),
+        'code_transaction': codeTransaction.toString(),
+        'total_payment': totalPayment.toString(),
+        'state_transaction': stateTransaction,        
+        'id_user': idUsersApp.toString(),  
+        'alamat': alamat.toString(),  
+        'level': level.toString()
+      });  
+    var dio = Dio();
+    final response = await dio.post(ApiUrl.viewTransBuku, data: map);
+
+    List<PostList> listTeam  = parseResponse(response.data);
+    return listTeam;
+  }
+
   static Future <List<PostList>> functionUploadDataTransaksi(
     action, idTransaksi ,qtyPick, idBook ,codeTransaction,stateTransaction,totalPayment,
-    idUsersApp) async{
+    idUsersApp,alamat) async{
     String tglInput = DateTime.now().toString();
     var map = 
     FormData.fromMap({
@@ -146,19 +167,21 @@ class Service {
         'qty_pick': qtyPick.toString(),
         'id_book': idBook.toString(),
         'code_transaction': codeTransaction.toString(),
+        'date_transaction': tglInput.toString(),
         'total_payment': totalPayment.toString(),
         'state_transaction': stateTransaction,        
         'id_user': idUsersApp.toString(),        
+        'alamat': alamat.toString(),  
       });
     var dio = Dio();
     final response = 
-    action == ApiUrl.tambahStockBukuText
-    ? await dio.post(ApiUrl.addDataStockBuku, data: map)
-    : action == ApiUrl.deleteStockBukuText
+    action == ApiUrl.tambahTransBukuText
+    ? await dio.post(ApiUrl.addTransBuku, data: map)
+    : action == ApiUrl.deleteTransBukuText
     ? await dio.post(ApiUrl.deleteDataStockBuku, data: map)
-    : action == ApiUrl.editStockBukuText
-    ? await dio.post(ApiUrl.editDataStockBuku, data: map)
-    : await dio.post(ApiUrl.stockBook, data: map);
+    : action == ApiUrl.deleteTransBuku
+    ? await dio.post(ApiUrl.editTransBuku, data: map)
+    : await dio.post(ApiUrl.transaksiBuku, data: map);
     print(action);    
     print(response.statusCode); 
     List<PostList> list  = parseResponse(response.data);

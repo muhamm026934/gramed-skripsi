@@ -101,7 +101,7 @@ class _WebViewExampleState extends State<WebViewExample> {
           );
         },
       )
-      ..loadRequest(Uri.parse('http://192.168.1.3:8080/gramed/midtrans/examples/snap-redirect/checkout-process.php'));
+      ..loadRequest(Uri.parse('http://192.168.1.3:8080/gramed/midtrans/examples/snap-redirect/checkout-process.php?judul=${widget.session}&qty=${widget.qty}&jml_bayar=${widget.totalBayar}&code_byr=${widget.codeBayar}&nama=${widget.namaUser}'));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {

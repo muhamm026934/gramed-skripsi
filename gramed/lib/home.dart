@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:gramed/api/api.dart';
 import 'package:gramed/api/postlist.dart';
@@ -144,7 +146,9 @@ class _HomeState extends State<Home> {
   stateTransactions = "",
   idUsers = "";
   
+  late int randomNumber;
 
+ 
   _cFormAlertBuy(
     cFormAlertBuyss,
     idBookss,
@@ -155,10 +159,11 @@ class _HomeState extends State<Home> {
     idUserss
     ){
     setState(() {
+      randomNumber = (Random().nextInt(100000));
       cFormAlertBuy = cFormAlertBuyss;
       idBooks = idBookss.toString();
       qtyPicks = qtyPickss.toString();
-      codeTransactions = "$idBooks-$idUsersApp";
+      codeTransactions = "$idBooks-$idUsersApp-${randomNumber.toString()}";
       totalPayments = totalPaymentss.toString();
       stateTransactions = stateTransactionss.toString();
       idUsers = idUsersApp.toString(); 
@@ -194,7 +199,7 @@ class _HomeState extends State<Home> {
         color: Colors.black45,
         child: Center(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height* 0.6,  
+            height: MediaQuery.of(context).size.height* 0.5,  
             width: MediaQuery.of(context).size.width* 0.9,          
             child: Card(
               child: ListView(
@@ -234,22 +239,266 @@ class _HomeState extends State<Home> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(child: OutlinedButton.icon(onPressed: (){
-                        PageRoutes.routeToWebViewPay(
-                          context,
-                          juduls.toString(),
-                          codeTransactions.toString(), 
-                          name.toString(), 
-                          qtyBeli.toString(), 
-                          jmlBayar.toString(),);
+                        _commandAlertMessage(ApiUrl.tambahTransBukuText, juduls, true,ApiUrl.tambahBayarText);
+
                       }, icon: const Icon(Icons.monetization_on), label: const Text("Pembayaran"))),
-                    ),                   
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang"))),
-                    )
+                    ),                  
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+ String message = "", values = "", stateTransaction = "", idTransaksi = "", headerText = "",textFormUpdateAdd ="";
+ List<PostList?> _messageUpload = [];
+
+ _functionUploadDataTransaksi() async{
+  setState(() {
+    _loading = true;
+    print("object $_loading");
+  });
+  
+  Service.functionUploadDataTransaksi(
+    headerText, 
+    idTransaksi.toString(),
+    qtyBeli.toString(), 
+    idBooks.toString(),
+    codeTransactions.toString(),
+    stateTransaction.toString(),
+    jmlBayar.toString(),
+    idUsersApp.toString(),
+    cAlamat.text).then((value) async {
+    setState(() {
+      _messageUpload = value;
+      _loading = false;
+      message = _messageUpload[0]!.message.toString();
+      values = _messageUpload[0]!.value.toString();   
+      print("message $message");
+      print(values);    
+      
+      if (values == "1") {
+        setState(() {
+          _messageUpload.clear();
+          message ="";
+          values ="";
+
+          if (funtionAlert == ApiUrl.tambahBayarText) {
+            PageRoutes.routeToWebViewPay(
+              context,
+              juduls.toString(),
+              codeTransactions.toString(), 
+              name.toString(), 
+              qtyBeli.toString(), 
+              hargaJuals.toString(),);            
+          }
+        });
+      }else{
+        setState(() {
+       
+        });
+      }
+    });
+  });
+
+  List<PostList?> _listKeranjang = [];
+  String actions = "";
+  _getDataTrans() async{
+    setState(() {
+      _loading = true;
+    });
+    Service.getStockTransBuku(
+      actions, idTransaksi ,qtyBeli, idBooks ,codeTransactions,stateTransaction,totalPayments,
+    idUsersApp,cAlamat.text,level).then((value) async {
+      setState(() {
+        _listKeranjang = value;
+        _loading = false;
+      });
+    });
+  }
+
+bool formDataKeranjang = false;
+String judulTrans ="";
+_commandformDataKeranjang(idBuku,judulTranss,formDataKeranjangs){
+  setState(() {
+    judulTrans = judulTranss;
+    formDataKeranjang = formDataKeranjangs;
+    if (formDataKeranjang == true) {
+     _getDataTrans();
+     
+    }else{
+      _listKeranjang.clear();
+    }
+  });
+}
+
+  _dataTransBook(){
+    return Container(
+      color: Colors.black38,
+      child: Center(
+        child: Card(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width* 0.8,
+            height: MediaQuery.of(context).size.height* 0.6,   
+            child: Column(
+              children: [
+                Card(
+                  color: Colors.blue,
+                  child: Wrap(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("List Keranjang $judulTrans",
+                        style: const TextStyle(fontSize: 18,color: Colors.white)),
+                      ),
+                      IconButton(onPressed: (){
+                        _commandformDataKeranjang("","",false);
+                      }, icon: const Icon(Icons.close,color: Colors.red,))
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _listKeranjang.length,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context,index){
+                      final listDataStockBuku = _listKeranjang[index]; 
+                      return GestureDetector(
+                        onLongPress: (){
+                        },
+                        child: Card(
+                          color: Colors.blue,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: Text("Judul : ${listDataStockBuku!.judul}",style: _customFont()),
+                                subtitle: Text("Qty Buku : ${listDataStockBuku.qtyPick}",style: _customFont(),),
+                                leading: Image.network(ApiUrl.viewImageBuku+listDataStockBuku.imageBook),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Total Bayar: ${listDataStockBuku.totalPayment}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Alamat : ${listDataStockBuku.alamat}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ),    
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Status Transaksi : ${listDataStockBuku.stateTransaction}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                              ),   
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Card(child: IconButton(onPressed: (){
+                                    
+                                  }, icon: const Icon(Icons.delete,color: Colors.red))),       
+                                  Card(child: IconButton(onPressed: (){
+
+                                  }, icon: const Icon(Icons.edit,color: Colors.orange))),                                                              
+                                ],
+                              )        
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  }
+  TextStyle _customFont() {
+  return const TextStyle(color: Colors.white);
+  }
+
+
+  String titleText = "",funtionAlert ="";
+  bool tampilAlertMessage = false;
+  _commandAlertMessage(headers, titles, tampilAlertMessages,funtionAlerts){
+    setState(() {
+      textFormUpdateAdd = headers;
+      headerText = headers;
+      titleText = titles;
+      tampilAlertMessage = tampilAlertMessages;
+      funtionAlert = funtionAlerts;
+      print(funtionAlert);
+    });
+  }  
+
+  _alertMessage(){
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width* 0.8,
+        height: MediaQuery.of(context).size.height* 0.3,        
+        child: Card(
+          color: 
+            textFormUpdateAdd == ApiUrl.tambahTransBukuText || headerText == ApiUrl.tambahTransBukuText 
+            ? Colors.green
+            :textFormUpdateAdd == ApiUrl.editTransBukuText || headerText == ApiUrl.editTransBukuText 
+            ? Colors.orange
+            :textFormUpdateAdd == ApiUrl.deleteTransBukuText || headerText == ApiUrl.deleteTransBukuText
+            ? Colors.red
+            : Colors.blue,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0,left: 8.0,right: 8.0),
+                child: Center(child: Text(
+                  funtionAlert == ApiUrl.tambahBayarText ? "Pembayaran Buku":"Masukkan Ke Keranjang"
+                  , style:_customFont(),textAlign: TextAlign.center,)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text(titleText, style:_customFont())),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top :18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Card(
+                      color: Colors.blue,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('OK',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          _functionUploadDataTransaksi();
+                        },
+                      ),
+                    ),   
+                    Card(
+                      color: Colors.orangeAccent,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.blue,
+                        padding: const EdgeInsets.all(10.0),
+                        textStyle: const TextStyle(fontSize: 12),
+                        ), child: const Text('Batal',style: TextStyle(color: Colors.white),),
+                        onPressed: (){
+                          _commandAlertMessage(headerText, "", false,"");
+                        },
+                      ),
+                    ),                              
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -306,9 +555,10 @@ class _HomeState extends State<Home> {
                             "",
                             idUsersApp
                             );
-                          // PageRoutes.routeToWebViewPay(context);
                         }, icon: const Icon(Icons.sell), label: const Text("Beli"))),                   
-                        Card(child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang")))
+                        Card(child: OutlinedButton.icon(onPressed: (){
+                          _commandAlertMessage(ApiUrl.tambahTransBukuText, juduls, true,ApiUrl.tambahKeranjangText);
+                        }, icon: const Icon(Icons.add_shopping_cart_outlined), label: Text("Keranjang")))
                       ],
                     ),
                   )
@@ -369,7 +619,7 @@ class _HomeState extends State<Home> {
                                 initialPage: 0,
                                 enableInfiniteScroll: true,
                                 reverse: false,
-                                autoPlay: true,
+                                autoPlay: false,
                                 autoPlayInterval: const Duration(seconds: 5),
                                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                                 autoPlayCurve: Curves.fastOutSlowIn,
@@ -575,6 +825,9 @@ class _HomeState extends State<Home> {
            cFormAlertBuy == true
           ? _formAlertBuy()
           :Container(),
+          tampilAlertMessage == true
+          ? _alertMessage()
+          : Container(),   
         ],
       ),
     );

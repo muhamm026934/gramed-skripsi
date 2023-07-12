@@ -39,6 +39,14 @@ class PostList {
 
   late String totalQtyGr;
 
+  late String idTransaction;
+  late String qtyPick; 
+  late String codeTransaction; 
+  late String dateTransaction;
+  late String totalPayment;      
+  late String stateTransaction;     
+  late String alamat;     
+
   PostList({
     required this.idBuku,
     required this.judul,
@@ -78,7 +86,14 @@ class PostList {
     required this.token, 
 
     required this.totalQtyGr, 
-    
+
+    required this.idTransaction,
+    required this.qtyPick, 
+    required this.codeTransaction, 
+    required this.dateTransaction,
+    required this.totalPayment,      
+    required this.stateTransaction,     
+    required this.alamat,     
   });
 
   factory PostList.fromJsons(Map<String,dynamic> json){
@@ -121,6 +136,14 @@ class PostList {
       token: json['token'] ?? "",   
 
       totalQtyGr: json['total_qty_gr'] ?? "",   
+
+      idTransaction: json['id_transaction'] ?? "",
+      qtyPick: json['qty_pick'] ?? "", 
+      codeTransaction: json['code_transaction'] ?? "", 
+      dateTransaction: json['date_transaction'] ?? "",
+      totalPayment: json['total_payment'] ?? "",      
+      stateTransaction: json['state_transaction'] ?? "",     
+      alamat: json['alamat'] ?? "",         
 
       );
   }

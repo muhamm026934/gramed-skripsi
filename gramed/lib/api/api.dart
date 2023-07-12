@@ -31,5 +31,16 @@ class ApiUrl {
   static String viewDataStockBuku = "$server/$stockBook/data_stock_book.php";
   static String editDataStockBuku = "$server/$stockBook/edit_stock_book.php";
   static String deleteDataStockBuku = "$server/$stockBook/delete_stock_book.php";
+  static String transaksiBuku = "transaksi_buku";
+  static String tambahTransBukuText = "Tambah Transaksi Buku";
+  static String editTransBukuText = "Edit Transaksi Buku";
+  static String deleteTransBukuText = "Hapus Transaksi Data Buku";
+  static String detailTransBukuText = "Detail Transaksi Data Buku";  
+  static String addTransBuku = "$server/$transaksiBuku/add_trans.php";
+  static String viewTransBuku = "$server/$transaksiBuku/data_trans.php";
+  static String editTransBuku = "$server/$transaksiBuku/edit_trans.php";
+  static String deleteTransBuku = "$server/$transaksiBuku/delete_trans.php"; 
+  static String tambahBayarText = "Pembayaran"; 
+  static String tambahKeranjangText = "Keranjang";
   
 }
