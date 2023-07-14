@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gramed/api/api.dart';
 import 'package:gramed/page_routes.dart';
 import 'package:gramed/service.dart';
 import 'package:gramed/user/customAlertDialog.dart';
@@ -22,7 +23,7 @@ class _LoginState extends State<Login> {
   TextEditingController controllerUsername = TextEditingController();
   TextEditingController controllerPasword = TextEditingController();
 
-  late bool _loading;
+  late bool _loading = false;
   String message = "", values = "";
   
   showMyDialog(title,content,backgroundColor,onPressedOks,onPressedNotOKs,textButtonOK,textButtonNotOK,textColor,buttonColorOk,buttonColorNotOK) {
@@ -47,15 +48,16 @@ class _LoginState extends State<Login> {
     PageRoutes.routeToHome(context);
   }
 
-  _logins(username,password) async{
+  _logins() async{
     setState(() {
       _loading = true;
     });
-    Service.logins(username,password).then((valueUser) async {
+    Service.logins(controllerUsername.text,controllerPasword.text).then((valueUser) async {
       setState(() {
         message = valueUser['message'];
         values = valueUser['value'];
-        _loading = false;                             
+              
+        print(message);                     
       });
       switch (values) {
         case "1":
@@ -103,6 +105,7 @@ class _LoginState extends State<Login> {
           prefs.setString('token', tokens);  
 
           _pageRoutesAfterLogin();
+          _loading = false;  
              });          
           break;          
         default:
@@ -153,40 +156,48 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),   
-                  Padding(
-                    padding: const EdgeInsets.only(top:20.0,right: 8.0,left: 8.0),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: <Color>[
-                                  Color(0xFF0D47A1),
-                                  Color(0xFF1976D2),
-                                  Color(0xFF42A5F5),
-                                ],
+                  GestureDetector(
+                    onTap: (){_logins();},
+                    child: Padding(
+                      padding: const EdgeInsets.only(top:20.0,right: 8.0,left: 8.0),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: <Color>[
+                                    Color(0xFF0D47A1),
+                                    Color(0xFF1976D2),
+                                    Color(0xFF42A5F5),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Center(
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            surfaceTintColor: Colors.blue,
-                            padding: const EdgeInsets.all(16.0),
-                            textStyle: const TextStyle(fontSize: 20),
-                            ), child: const Text('Login',style: TextStyle(color: Colors.white),),
-                            onPressed: (){
-                              _logins(controllerUsername.text,controllerPasword.text);
-                            },
+                          Center(
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              surfaceTintColor: Colors.blue,
+                              padding: const EdgeInsets.all(16.0),
+                              textStyle: const TextStyle(fontSize: 20),
+                              ), child: const Text('Login',style: TextStyle(color: Colors.white),),
+                              onPressed: (){
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  )               
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextButton(onPressed: (){
+                      PageRoutes.routeToHomeUserEdit(context,ApiUrl.tambahUserText);
+                    }, child: const Text("Register",style: TextStyle(color: Colors.blue),)),
+                  ),                                 
                 ],
               ),
             ),

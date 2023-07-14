@@ -153,7 +153,9 @@ class Service {
     final response = await dio.post(ApiUrl.viewTransBuku, data: map);
 
     List<PostList> listTeam  = parseResponse(response.data);
+    print(listTeam);
     return listTeam;
+    
   }
 
   static Future <List<PostList>> functionUploadDataTransaksi(
@@ -246,6 +248,7 @@ class Service {
     print(action);      
     print(response.statusCode);
     print("cUserId $cUserId");
+    print(ApiUrl.editDataUser);
     List<PostList> list  = parseResponse(response.data);
     return list;
   }  

@@ -10,6 +10,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:gramed/api/api.dart';
 import 'package:gramed/page_routes.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -81,7 +82,7 @@ class _WebViewExampleState extends State<WebViewExample> {
           },
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.
-            startsWith('http://192.168.1.3:8080/gramed/midtrans/examples/snap-redirect/checkout-process.php?judul=${widget.session}&qty=${widget.qty}&jml_bayar=${widget.totalBayar}&code_byr=${widget.codeBayar}&nama=${widget.namaUser}')) {
+            startsWith('${ApiUrl.server}/gramed/midtrans/examples/snap-redirect/checkout-process.php?judul=${widget.session}&qty=${widget.qty}&jml_bayar=${widget.totalBayar}&code_byr=${widget.codeBayar}&nama=${widget.namaUser}')) {
               debugPrint('blocking navigation to ${request.url}');
               return NavigationDecision.prevent;
             }
@@ -101,7 +102,7 @@ class _WebViewExampleState extends State<WebViewExample> {
           );
         },
       )
-      ..loadRequest(Uri.parse('http://192.168.1.3:8080/gramed/midtrans/examples/snap-redirect/checkout-process.php?judul=${widget.session}&qty=${widget.qty}&jml_bayar=${widget.totalBayar}&code_byr=${widget.codeBayar}&nama=${widget.namaUser}'));
+      ..loadRequest(Uri.parse('${ApiUrl.server}/midtrans/examples/snap-redirect/checkout-process.php?judul=${widget.session}&qty=${widget.qty}&jml_bayar=${widget.totalBayar}&code_byr=${widget.codeBayar}&nama=${widget.namaUser}'));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {

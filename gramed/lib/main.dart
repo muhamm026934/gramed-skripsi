@@ -14,5 +14,5 @@ void main() => runApp(MaterialApp(
   ),
   debugShowCheckedModeBanner: false,
   title: "Gramedia",
-  home: Home(session: '',)
+  home: const Home(session: '',user: '',trans: "")
 ));

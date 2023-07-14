@@ -86,6 +86,8 @@ class _BookState extends State<Book> {
   Color _colorIcon() {
     return Colors.white;
   }
+
+    TextEditingController cSearch = TextEditingController();
     TextEditingController cBookId = TextEditingController();
     TextEditingController cBookJudul = TextEditingController();
     TextEditingController cBookPenerbit = TextEditingController();
@@ -1131,54 +1133,67 @@ _deleteStock(stockBookId,bookId,grQty,grDate,noNota,judul){
     return Scaffold(
       drawer: const Drawers(),
       appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: TextField(
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white)
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: cSearch,
+                  decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)
+                    ),
+                    label: Text("Pencarian Judul Buku, Pengarang dan Penerbit",style: TextStyle(fontSize: 10,color: Colors.white),),
+                  ),                
+                ),
               ),
-              label: Text("Pencarian Judul Buku, Pengarang dan Penerbit",style: TextStyle(fontSize: 10,color: Colors.white),),
-            ),                
+              IconButton(onPressed: (){
+                _getDataBuku("","",cSearch.text,"","");
+              }, icon: const Icon(Icons.search))
+            ],
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top:1.0,right: 8.0,left: 8.0),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 1,
-                child: ScrollConfiguration(
-                  behavior: WebCustomScrollBehavior(),
-                  child: _dataBook(),
+      body: RefreshIndicator(
+        onRefresh: () => _getDataBuku("","","","",""),
+        child: Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top:1.0,right: 8.0,left: 8.0),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 1,
+                  child: ScrollConfiguration(
+                    behavior: WebCustomScrollBehavior(),
+                    child: _dataBook(),
+                  ),
                 ),
               ),
-            ),
-            tampilFormUpdateAdd == true
-            ? _formUpdateAdd()
-            :Container(),
-            tampilAlertMessage == true
-            ? _alertMessage()
-            : Container(),
-            tampilAlertMessageResponse == true
-            ? _alertMessageResponse()
-            : Container(),
-            formDataStockBook == true
-            ? _dataStockBook()
-            : Container(),  
-            cFormUpdateAddBook == true
-            ? _formUpdateAddBook()
-            : Container(),            
-            cAlertMessageStock == true     
-            ? _alertMessageStock()
-            :Container(),
-            tampilAlertMessageResponseStock == true  
-            ?_alertMessageResponseStock()
-            :Container()
-          ],
+              tampilFormUpdateAdd == true
+              ? _formUpdateAdd()
+              :Container(),
+              tampilAlertMessage == true
+              ? _alertMessage()
+              : Container(),
+              tampilAlertMessageResponse == true
+              ? _alertMessageResponse()
+              : Container(),
+              formDataStockBook == true
+              ? _dataStockBook()
+              : Container(),  
+              cFormUpdateAddBook == true
+              ? _formUpdateAddBook()
+              : Container(),            
+              cAlertMessageStock == true     
+              ? _alertMessageStock()
+              :Container(),
+              tampilAlertMessageResponseStock == true  
+              ?_alertMessageResponseStock()
+              :Container()
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

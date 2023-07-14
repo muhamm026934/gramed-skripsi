@@ -509,51 +509,54 @@ bool appBarf = false;
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          ListView.builder(
-            itemCount: _listUser.length,
-            itemBuilder: (context,index){
-              final listDataUser = _listUser[index]; 
-              return Card(
-                color: Colors.blue,
-                child: ListTile(
-                  title: Text(listDataUser!.name),
-                  subtitle: Text(listDataUser.username),
-                  leading: IconButton(onPressed: (){
-                    setState(() {
-                      cUserId.text = listDataUser.idUser;
-                    });
-                    _commandAlertMessage(ApiUrl.deleteUserText, listDataUser.name, true);
-                  }, icon: const Icon(Icons.delete,color: Colors.white,)),
-                  trailing: IconButton(onPressed: (){
-                    _editDataUser(
-                      listDataUser.idUser,
-                      listDataUser.name,
-                      listDataUser.username,
-                      listDataUser.password,
-                      listDataUser.password,
-                      listDataUser.address,
-                      listDataUser.level,
-                      listDataUser.email,
-                      listDataUser.noTelp,
-                      listDataUser.token,
-                      ApiUrl.editUserText);
-                  }, icon: const Icon(Icons.edit,color: Colors.white)),
-                ),
-              );
-            }
-          ),
-            tampilFormUpdateAdd == true
-            ? _formUpdateAdd()
-            : Container(),
-            tampilAlertMessage == true
-            ? _alertMessage()
-            : Container(),         
-            tampilAlertMessageResponse == true
-            ? _alertMessageResponse()
-            : Container(),            
-        ],
+      body: RefreshIndicator(
+        onRefresh: () =>_getDataUser("","","","","",""),
+        child: Stack(
+          children: [
+            ListView.builder(
+              itemCount: _listUser.length,
+              itemBuilder: (context,index){
+                final listDataUser = _listUser[index]; 
+                return Card(
+                  color: Colors.blue,
+                  child: ListTile(
+                    title: Text(listDataUser!.name),
+                    subtitle: Text(listDataUser.username),
+                    leading: IconButton(onPressed: (){
+                      setState(() {
+                        cUserId.text = listDataUser.idUser;
+                      });
+                      _commandAlertMessage(ApiUrl.deleteUserText, listDataUser.name, true);
+                    }, icon: const Icon(Icons.delete,color: Colors.white,)),
+                    trailing: IconButton(onPressed: (){
+                      _editDataUser(
+                        listDataUser.idUser,
+                        listDataUser.name,
+                        listDataUser.username,
+                        listDataUser.password,
+                        listDataUser.password,
+                        listDataUser.address,
+                        listDataUser.level,
+                        listDataUser.email,
+                        listDataUser.noTelp,
+                        listDataUser.token,
+                        ApiUrl.editUserText);
+                    }, icon: const Icon(Icons.edit,color: Colors.white)),
+                  ),
+                );
+              }
+            ),
+              tampilFormUpdateAdd == true
+              ? _formUpdateAdd()
+              : Container(),
+              tampilAlertMessage == true
+              ? _alertMessage()
+              : Container(),         
+              tampilAlertMessageResponse == true
+              ? _alertMessageResponse()
+              : Container(),            
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){

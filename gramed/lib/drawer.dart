@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gramed/api/api.dart';
 import 'package:gramed/customListTileEnable.dart';
 import 'package:gramed/page_routes.dart';
 import 'package:gramed/service.dart';
@@ -164,7 +165,34 @@ class _DrawersState extends State<Drawers> {
                     textColor: Colors.white,),
                   ),
                 ),
-              ),             
+              ),    
+              GestureDetector(
+                onTap: (){
+                  PageRoutes.routeToHomeTrans(context);
+                },
+                child: Container(
+                  color: Colors.blue,
+                  child: Card(
+                    color: Colors.blue,
+                    child: CustomListTileEnable(
+                    title: "Transaksi Buku",
+                    subtitle: "", 
+                    iconLead: Icons.shopping_cart_checkout,
+                    iconTrail: Icons.arrow_circle_right, 
+                    onTapTrail: (){
+                      PageRoutes.routeToHomeTrans(context);
+                    }, 
+                    onTapLead: (){
+                      PageRoutes.routeToHomeTrans(context);
+                    },
+                    titles: "Y", 
+                    subtitles: "", 
+                    leadings: "Y", 
+                    trailings: "Y", 
+                    textColor: Colors.white,),
+                  ),
+                ),
+              ),                         
               GestureDetector(
                 onTap: (){
                   PageRoutes.routeToUser(context);
@@ -219,6 +247,48 @@ class _DrawersState extends State<Drawers> {
                   ),
                 ),
               ),  
+              GestureDetector(
+                onTap: 
+                name != "" ? 
+                (){
+                  PageRoutes.routeToHomeUserEdit(context,ApiUrl.editUserText);
+                }
+                :(){
+                  PageRoutes.routeToHomeUserEdit(context,ApiUrl.tambahUserText);
+                },
+                child: Container(
+                  color: Colors.blue,
+                  child: Card(
+                    color: Colors.blue,
+                    child: CustomListTileEnable(
+                    title: name != "" ? "Edit Password" : "Register User",
+                    subtitle: "", 
+                    iconLead: Icons.person,
+                    iconTrail: Icons.arrow_circle_right, 
+                    onTapTrail: 
+                    name != "" ? 
+                    (){
+                      PageRoutes.routeToHomeUserEdit(context,ApiUrl.editUserText);
+                    }
+                    :(){
+                      PageRoutes.routeToHomeUserEdit(context,ApiUrl.tambahUserText);
+                    },
+                    onTapLead: 
+                    name != "" ? 
+                    (){
+                      PageRoutes.routeToHomeUserEdit(context,ApiUrl.editUserText);
+                    }
+                    :(){
+                      PageRoutes.routeToHomeUserEdit(context,ApiUrl.tambahUserText);
+                    },
+                    titles: "Y", 
+                    subtitles: "", 
+                    leadings: "Y", 
+                    trailings: "Y", 
+                    textColor: Colors.white,),
+                  ),
+                )
+              ),              
               name != ""             
               ? GestureDetector(
                 onTap: (){
