@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gramed/api/api.dart';
 import 'package:gramed/api/postlist.dart';
@@ -1228,7 +1229,15 @@ class _HomeState extends State<Home> {
                                             children: [
                                               Expanded(child: Padding(
                                                 padding: const EdgeInsets.only(top:8.0),
-                                                child: Image.network(ApiUrl.viewImageBuku+index!.imageBook),
+                                                child: CachedNetworkImage(
+                                                  progressIndicatorBuilder: (context, url, progress) => Center(
+                                                    child: CircularProgressIndicator(
+                                                      value: progress.progress,
+                                                    ),
+                                                  ),
+                                                  imageUrl:
+                                                      ApiUrl.viewImageBuku+index!.imageBook,
+                                                ),
                                               )),
                                               Align(
                                                 child: Text(index.judul.toString(),textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),

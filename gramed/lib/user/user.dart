@@ -11,6 +11,7 @@ class User extends StatefulWidget {
   State<User> createState() => _UserState();
 }
 
+
 class _UserState extends State<User> {
 
   @override
@@ -292,6 +293,13 @@ class _UserState extends State<User> {
       ),
     );
   }
+  
+ 
+  radioButtons(levelUserRadioButtons){
+    setState(() {
+      cLevel.text = levelUserRadioButtons;
+    });
+  }
 
   _formUpdateAdd(){
     return Center(
@@ -426,7 +434,13 @@ class _UserState extends State<User> {
                       ), 
                     ),
                   ),
-                ),                     
+                ),        
+                TextButton.icon(onPressed: (){
+                  radioButtons("admin");
+                }, icon: Icon(cLevel.text =="admin"?Icons.radio_button_on:Icons.radio_button_off), label: Text("Admin")), 
+                TextButton.icon(onPressed: (){
+                  radioButtons("user");
+                }, icon: Icon(cLevel.text =="user" || cLevel.text ==""?Icons.radio_button_on:Icons.radio_button_off), label: Text("User")),                                                                         
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top:8.0),
