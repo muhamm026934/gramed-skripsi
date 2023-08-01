@@ -525,7 +525,7 @@ class _HomeState extends State<Home> {
         },
         child: Center(
           child: Container(
-            height: sisaStocks == "0"? MediaQuery.of(context).size.height* 0.7:MediaQuery.of(context).size.height* 0.9,  
+            height: sisaStocks == "0"? MediaQuery.of(context).size.height* 0.6:MediaQuery.of(context).size.height* 0.85,  
             width: MediaQuery.of(context).size.width* 0.9,  
             color: Colors.black12,
             child: Card(
@@ -535,7 +535,10 @@ class _HomeState extends State<Home> {
                     sisaStocks == "0"
                     ? ListView(
                       children: [
-                        Image.network(ApiUrl.viewImageBuku+images),
+                        SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: Image.network(ApiUrl.viewImageBuku+images)),
                         Text("Harga : $hargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
                         Text("Diskon : $diskons % / $potonganHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
                         Text("Harga Setelah Diskon : $netHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
@@ -547,14 +550,17 @@ class _HomeState extends State<Home> {
                             color: Colors.orange,
                             child: Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Text("Stock  Kosong ",textAlign: TextAlign.center, style:  TextStyle(fontSize: 20.0,color: Colors.white),),
+                              child: Text("Stok Kosong ",textAlign: TextAlign.center, style:  TextStyle(fontSize: 20.0,color: Colors.white),),
                             )),
                         ),
                       ]
                     )
                     : ListView(
                       children: [
-                        Image.network(ApiUrl.viewImageBuku+images),
+                        SizedBox(
+                          width: 300,
+                          height: 300,                          
+                          child: Image.network(ApiUrl.viewImageBuku+images)),
                         Text("Harga : $hargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
                         Text("Diskon : $diskons % / $potonganHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
                         Text("Harga Setelah Diskon : $netHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
