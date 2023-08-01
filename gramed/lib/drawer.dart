@@ -128,11 +128,15 @@ class _DrawersState extends State<Drawers> {
             decoration : const BoxDecoration(
               color: Colors.blue
             ),
-            child:Stack(
+            child:Column(
               children: [
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.asset("assets/images/logo.png")),                
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(name,style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)
                   ),
                 ),
