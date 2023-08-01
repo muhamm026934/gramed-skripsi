@@ -525,13 +525,34 @@ class _HomeState extends State<Home> {
         },
         child: Center(
           child: Container(
-            height: MediaQuery.of(context).size.height* 0.9,  
+            height: sisaStocks == "0"? MediaQuery.of(context).size.height* 0.7:MediaQuery.of(context).size.height* 0.9,  
             width: MediaQuery.of(context).size.width* 0.9,  
             color: Colors.black12,
             child: Card(
               child: Card(
                     color: Colors.blue,
-                    child: ListView(
+                    child: 
+                    sisaStocks == "0"
+                    ? ListView(
+                      children: [
+                        Image.network(ApiUrl.viewImageBuku+images),
+                        Text("Harga : $hargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Diskon : $diskons % / $potonganHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Harga Setelah Diskon : $netHargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Judul : $juduls",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        Text("Deskripsi : $deskripsis",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Card(
+                            color: Colors.orange,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text("Stock  Kosong ",textAlign: TextAlign.center, style:  TextStyle(fontSize: 20.0,color: Colors.white),),
+                            )),
+                        ),
+                      ]
+                    )
+                    : ListView(
                       children: [
                         Image.network(ApiUrl.viewImageBuku+images),
                         Text("Harga : $hargas",textAlign: TextAlign.center, style:  const TextStyle(fontSize: 13.0,color: Colors.white),),
@@ -1200,7 +1221,7 @@ class _HomeState extends State<Home> {
                                   initialPage: 0,
                                   enableInfiniteScroll: true,
                                   reverse: false,
-                                  autoPlay: false,
+                                  autoPlay: true,
                                   autoPlayInterval: const Duration(seconds: 5),
                                   autoPlayAnimationDuration: const Duration(milliseconds: 800),
                                   autoPlayCurve: Curves.fastOutSlowIn,
