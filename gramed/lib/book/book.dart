@@ -612,6 +612,7 @@ _clearStock(){
            _commandFormUpdateAddBook("","",true,"","");
            _commandAlertMessageStock(headerStockText, "", true);
            _getDataStockBuku("", "", cBookId.text, "", "", idUsersApp);
+           _getDataBuku("","","","","");
            _clearStock();
            print("object tst $valuesStockBuku");
         });
@@ -1059,15 +1060,27 @@ _deleteStock(stockBookId,bookId,grQty,grDate,noNota,judul){
                 }, icon: Icon(Icons.remove_red_eye,color: _colorIcon())),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Deskripsi : ${listDataBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                padding: const EdgeInsets.all(2.0),
+                child: Center(child: Text("Deskripsi : ${listDataBuku.description}",style: const TextStyle(fontSize: 10,color: Colors.white),)),
               ), 
               Padding(
-                padding: const EdgeInsets.only(bottom:8.0),
+                padding: const EdgeInsets.all(2.0),
+                child: Text("Jumlah Stock : ${listDataBuku.totalQtyGr}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+              ),      
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text("Jumlah Order : ${listDataBuku.totalQtyPick}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+              ),  
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text("Sisa Stock : ${listDataBuku.sisaStock.toString()}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+              ),                                      
+              Padding(
+                padding: const EdgeInsets.only(bottom:2.0),
                 child: Text("Harga : Rp. ${listDataBuku.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
               ), 
               Padding(
-                padding: const EdgeInsets.only(bottom:8.0),
+                padding: const EdgeInsets.only(bottom:2.0),
                 child: 
                 listDataBuku.price != listDataBuku.netPrice
                 ? Text("Harga Setelah Diskon ${listDataBuku.diskon}% : Rp. ${listDataBuku.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
@@ -1075,7 +1088,7 @@ _deleteStock(stockBookId,bookId,grQty,grDate,noNota,judul){
               ), 
               onLongPress == true                        
               ? Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(2.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

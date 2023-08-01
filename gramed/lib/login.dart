@@ -109,6 +109,7 @@ class _LoginState extends State<Login> {
              });          
           break;          
         default:
+        _loading = false;  
           showMyDialog(
             "",
             message,
@@ -122,7 +123,7 @@ class _LoginState extends State<Login> {
           );                
       }  
     });
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +157,12 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),   
+                  _loading == true
+                  ? const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
+                    ),
+                  ): Container(),                  
                   GestureDetector(
                     onTap: (){_logins();},
                     child: Padding(
@@ -185,6 +192,7 @@ class _LoginState extends State<Login> {
                               textStyle: const TextStyle(fontSize: 20),
                               ), child: const Text('Login',style: TextStyle(color: Colors.white),),
                               onPressed: (){
+                                _logins();
                               },
                             ),
                           ),
@@ -196,7 +204,7 @@ class _LoginState extends State<Login> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(onPressed: (){
                       PageRoutes.routeToHomeUserEdit(context,ApiUrl.tambahUserText);
-                    }, child: const Text("Register",style: TextStyle(color: Colors.blue),)),
+                    }, child: const Text("Daftar",style: TextStyle(color: Colors.blue),)),
                   ),                                 
                 ],
               ),

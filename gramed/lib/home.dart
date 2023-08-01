@@ -1338,6 +1338,10 @@ class _HomeState extends State<Home> {
                                             ? Text("Harga Setelah Diskon ${_listBukuDiskon[index]!.diskon}% : Rp. ${_listBukuDiskon[index]!.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
                                             : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
                                           ), 
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom:8.0),
+                                            child: Text("Jumlah Stock : ${_listBukuDiskon[index]!.totalQtyGr}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                                          ),                                           
                                         ],
                                       ),
                                     ),
@@ -1356,51 +1360,59 @@ class _HomeState extends State<Home> {
                     (context, index) => ListTile(
                       tileColor: (index % 2 == 0) ? Colors.white : Colors.green[50],
                       title: Center(
-                        child: Card(
-                           color: Colors.blue,
-                          child: 
-                          GestureDetector(
-                            onTap: (){
-                              _openFormAdd(
-                                _listBukuNoDiskon[index]!.idBuku
-                                ,true,
-                                _listBukuNoDiskon[index]!.imageBook,
-                                _listBukuNoDiskon[index]!.judul,
-                                _listBukuNoDiskon[index]!.description,
-                                _listBukuNoDiskon[index]!.price,
-                                _listBukuNoDiskon[index]!.diskon,
-                                _listBukuNoDiskon[index]!.netPrice,
-                                _listBukuNoDiskon[index]!.potonganHarga,
-                                _listBukuNoDiskon[index]!.hargaJual,
-                                ApiUrl.tambahTransBukuText
-                                );
-                            },
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  leading: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image.network(ApiUrl.viewImageBuku+_listBukuNoDiskon[index]!.imageBook),
-                                  ),
-                                  title: Text(_listBukuNoDiskon[index]!.judul.toString(),
-                                    style: const TextStyle(
-                                        color: Colors.white),
-                                  ),
+                        child: Stack(
+                          children: [
+                            Card(
+                               color: Colors.blue,
+                              child: 
+                              GestureDetector(
+                                onTap: (){
+                                  _openFormAdd(
+                                    _listBukuNoDiskon[index]!.idBuku
+                                    ,true,
+                                    _listBukuNoDiskon[index]!.imageBook,
+                                    _listBukuNoDiskon[index]!.judul,
+                                    _listBukuNoDiskon[index]!.description,
+                                    _listBukuNoDiskon[index]!.price,
+                                    _listBukuNoDiskon[index]!.diskon,
+                                    _listBukuNoDiskon[index]!.netPrice,
+                                    _listBukuNoDiskon[index]!.potonganHarga,
+                                    _listBukuNoDiskon[index]!.hargaJual,
+                                    ApiUrl.tambahTransBukuText
+                                    );
+                                },
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Image.network(ApiUrl.viewImageBuku+_listBukuNoDiskon[index]!.imageBook),
+                                      ),
+                                      title: Text(_listBukuNoDiskon[index]!.judul.toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom:8.0),
+                                      child: Text("Harga : Rp. ${_listBukuNoDiskon[index]!.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                                    ), 
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom:8.0),
+                                      child: 
+                                      _listBukuNoDiskon[index]!.price != _listBukuNoDiskon[index]!.netPrice
+                                      ? Text("Harga Setelah Diskon ${_listBukuNoDiskon[index]!.diskon}% : Rp. ${_listBukuNoDiskon[index]!.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
+                                      : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
+                                    ),       
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom:8.0),
+                                      child: Text("Stock : ${_listBukuNoDiskon[index]!.sisaStock}",style: const TextStyle(fontSize: 10,color: Colors.white),),
+                                    ),                                                          
+                                  ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom:8.0),
-                                  child: Text("Harga : Rp. ${_listBukuNoDiskon[index]!.price}",style: const TextStyle(fontSize: 10,color: Colors.white),),
-                                ), 
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom:8.0),
-                                  child: 
-                                  _listBukuNoDiskon[index]!.price != _listBukuNoDiskon[index]!.netPrice
-                                  ? Text("Harga Setelah Diskon ${_listBukuNoDiskon[index]!.diskon}% : Rp. ${_listBukuNoDiskon[index]!.netPrice}",style: const TextStyle(fontSize: 10,color: Colors.white),)
-                                  : const Text("Belum Ada Diskon",style: TextStyle(fontSize: 10,color: Colors.white),),
-                                ),                               
-                              ],
+                              ),
                             ),
-                          ),
+                          ],
                         ), //Text
                       ),
                     ), 

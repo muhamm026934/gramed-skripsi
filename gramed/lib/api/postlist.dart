@@ -38,6 +38,8 @@ class PostList {
   late String token; 
 
   late String totalQtyGr;
+  late String totalQtyPick;
+  late String sisaStock;
 
   late String idTransaction;
   late String qtyPick; 
@@ -86,6 +88,8 @@ class PostList {
     required this.token, 
 
     required this.totalQtyGr, 
+    required this.totalQtyPick,
+    required this.sisaStock,
 
     required this.idTransaction,
     required this.qtyPick, 
@@ -136,6 +140,8 @@ class PostList {
       token: json['token'] ?? "",   
 
       totalQtyGr: json['total_qty_gr'] ?? "",   
+      totalQtyPick: json['total_qty_pick'] ?? "",
+      sisaStock: json['sisa_stock'] ?? "",
 
       idTransaction: json['id_transaction'] ?? "",
       qtyPick: json['qty_pick'] ?? "", 
