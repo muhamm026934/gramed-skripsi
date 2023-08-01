@@ -132,12 +132,12 @@ class _HomeState extends State<Home> {
   }
 
  bool _openFormAdds = false;
- String tags = "",images ="",juduls ="",deskripsis = "",hargas ="",diskons ="",netHargas ="",potonganHargas = "";
+ String tags = "",images ="",juduls ="",deskripsis = "",hargas ="",diskons ="",netHargas ="",potonganHargas = "", sisaStocks = "";
  int qtyBeli = 1;
  String hargaJuals = "0", openFormText = "";
  late int jmlBayar = qtyBeli * int.parse(hargaJuals);
  var jmlBayars = "";
-  _openFormAdd(idBookss,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual,openFormTexts){
+  _openFormAdd(idBookss,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual,openFormTexts,sisaStock){
     setState(() {
       _openFormAdds = openFormAdds;
       idBooks = idBookss;
@@ -152,6 +152,7 @@ class _HomeState extends State<Home> {
       qtyBeli = 1;     
       jmlBayar = qtyBeli * int.parse(hargaJuals);
       openFormText = openFormTexts;
+      sisaStocks = sisaStock;
     });
   }
   _openFormEdit(idBookss,openFormAdds,image,judul,deskripsi,harga, diskon, netHarga,potonganHarga,hargaJual,openFormTexts){
@@ -520,7 +521,7 @@ class _HomeState extends State<Home> {
       color: Colors.black38,
       child: GestureDetector(
         onTap: (){
-          _openFormAdd(idBooks,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals,ApiUrl.tambahTransBukuText);
+          _openFormAdd(idBooks,false,images,juduls,deskripsis,hargas, diskons, netHargas,potonganHargas,hargaJuals,ApiUrl.tambahTransBukuText,sisaStocks);
         },
         child: Center(
           child: Container(
@@ -1312,7 +1313,8 @@ class _HomeState extends State<Home> {
                                     _listBukuDiskon[index]!.netPrice,
                                     _listBukuDiskon[index]!.potonganHarga,
                                     _listBukuDiskon[index]!.hargaJual,
-                                    ApiUrl.tambahTransBukuText
+                                    ApiUrl.tambahTransBukuText,
+                                    _listBukuDiskon[index]!.sisaStock,
                                     );                        
                               },
                               child: Card(
@@ -1378,7 +1380,8 @@ class _HomeState extends State<Home> {
                                     _listBukuNoDiskon[index]!.netPrice,
                                     _listBukuNoDiskon[index]!.potonganHarga,
                                     _listBukuNoDiskon[index]!.hargaJual,
-                                    ApiUrl.tambahTransBukuText
+                                    ApiUrl.tambahTransBukuText,
+                                    _listBukuNoDiskon[index]!.sisaStock,
                                     );
                                 },
                                 child: Column(
