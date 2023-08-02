@@ -636,6 +636,8 @@ _clearStock(){
     });
   }
 
+  DateTime selectedDate = DateTime.now();
+
   _alertMessageResponseStock(){
     return Center(
       child: SizedBox(
@@ -814,16 +816,32 @@ _commandAlertMessageStock(headerAddUpdateStockTexts,headerStockTextAlerts,cAlert
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
-                      child: TextField(
-                        keyboardType: TextInputType.datetime,
-                        enabled: headerText == ApiUrl.detailBukuText ?false : true,
-                        controller: cStockBookGrDate,
-                        decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue)
+                      child: Row(
+                        children: [
+                          IconButton(onPressed: () async{
+                            final date = await pickDate();
+                            setState(() {
+                              if (date == null) {
+                                cStockBookGrDate.text = "";
+                              }else{
+                                cStockBookGrDate.text = date.toString().substring(0,10);
+                              }                            
+                            });
+                          }, icon: const Icon(Icons.calendar_today,color: Colors.blue,)),                          
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.datetime,
+                              enabled: headerText == ApiUrl.detailBukuText ?false : true,
+                              controller: cStockBookGrDate,
+                              decoration: const InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue)
+                                ),
+                                label: Text("Tanggal Terima Buku",style: TextStyle(fontSize: 10,color: Colors.blue),),
+                              ), 
+                            ),
                           ),
-                          label: Text("Tanggal Terima Buku",style: TextStyle(fontSize: 10,color: Colors.blue),),
-                        ), 
+                        ],
                       ),
                     ),
                   ),  
@@ -1219,4 +1237,9 @@ _deleteStock(stockBookId,bookId,grQty,grDate,noNota,judul){
       ),
     );
   }
+  Future<DateTime?> pickDate() => showDatePicker(
+    context: context, 
+    initialDate: selectedDate, 
+    firstDate: DateTime(1900), 
+    lastDate: DateTime(2100));    
 }
